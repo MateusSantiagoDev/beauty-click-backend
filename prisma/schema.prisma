@@ -8,12 +8,25 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(uuid())
+  id        String   @id
   name      String
   email     String
   cpf       String
   password  String
-  createdAt String @map("created_at")
+  role      String
+  address   Address?
+  createdAt String   @map("created_at")
 
   @@map("user")
+}
+
+model Address {
+  id       String @id
+  district String
+  road     String
+  number   Int
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @unique
+
+  @@map("address")
 }
