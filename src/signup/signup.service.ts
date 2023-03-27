@@ -16,6 +16,24 @@ export class SignupService {
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
     try {
+      const requiredFields = [
+        'name',
+        'email',
+        'cpf',
+        'password',
+        'confirmPassword',
+        'role',
+        'cep',
+        'district',
+        'road',
+        'number',
+      ];
+
+      for (const field of requiredFields) {
+        if (!dto[field]) {
+          throw new Validation('Por favor informe todos os campos');
+        }
+      }
       if (dto.password !== dto.confirmPassword) {
         throw new Error('Senha invalida!');
       }
@@ -88,11 +106,11 @@ export class SignupService {
 
   async findByEmail(email: string): Promise<UserEntity> {
     try {
-      return await this.prisma.user.findFirstOrThrow({    
+      return await this.prisma.user.findFirstOrThrow({
         where: { email },
       });
     } catch (error) {
-      return null
+      return null;
     }
   }
 
