@@ -19,7 +19,7 @@ export function HandleExceptions({ exceptionType, message }: IException) {
     throw new UnauthorizedException(
       message
         ? message
-        : 'Você não tem permissão para realizar esta ação | Conta de usuário j[á existe no sistema',
+        : 'Você não tem permissão para realizar esta ação | Conta de usuário já existe no sistema',
     );
   }
 
