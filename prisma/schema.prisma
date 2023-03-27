@@ -15,13 +15,15 @@ model User {
   password  String
   role      String
   address   Address?
-  createdAt String   @map("created_at")
+  createdAt DateTime? @map("created_at")
+  updatedAt DateTime? @map("updated_at")
 
   @@map("user")
 }
 
 model Address {
   id       String @id
+  cep      String
   district String
   road     String
   number   Int
