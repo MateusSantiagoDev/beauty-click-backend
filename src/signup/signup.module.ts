@@ -7,5 +7,6 @@ import { SignupService } from './signup.service';
   imports: [PrismaModule],
   controllers: [SignupController],
   providers: [SignupService],
+  exports: [SignupService],
 })
 export class SignupModule {}
