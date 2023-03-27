@@ -4,53 +4,69 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user-entity';
 import { PrismaService } from '../prisma/prisma.service';
-import { ValidationEmail } from '../utils/unique-data-validation/unique-email';
+import { IsValidEmail } from '../utils/validation-data/validation-email';
+import { hash } from 'bcrypt';
+import { Exceptions } from 'src/utils/exceptions/exception';
+import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
+import { Validation } from 'src/utils/exceptions/error/validation';
 
 @Injectable()
 export class SignupService {
-  constructor(
-    private readonly prisma: PrismaService,
-    ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
-    if (dto.password !== dto.confirmPassword) {
-      throw new Error('Senha invalida!');
+    try {
+      if (dto.password !== dto.confirmPassword) {
+        throw new Error('Senha invalida!');
+      }
+      delete dto.confirmPassword;
+
+      const isValid = new IsValidEmail(this, dto.email);
+      if (!isValid.EmailRegex()) {
+        throw new Validation('Email Invalido!');
+      }
+
+      if (await isValid.UniqueEmail()) {
+        throw new Validation('Email já cadastrado!');
+      }
+
+      const userId = randomUUID();
+      const addressId = randomUUID();
+
+      const result = await this.prisma.$transaction(async (prisma) => {
+        const userData = await prisma.user.create({
+          data: {
+            id: userId,
+            name: dto.name,
+            email: dto.email,
+            cpf: dto.cpf,
+            password: await hash(dto.password, 12),
+            role: dto.role,
+            createdAt: new Date(),
+          },
+        });
+        const addressData = await prisma.address.create({
+          data: {
+            id: addressId,
+            cep: dto.address.cep,
+            district: dto.address.district,
+            road: dto.address.road,
+            number: dto.address.number,
+            user: { connect: { id: userData.id } },
+          },
+        });
+        return { ...userData, address: addressData };
+      });
+
+      delete result.updatedAt;
+
+      return result;
+    } catch (error) {
+      if (error instanceof Validation) {
+        throw new Exceptions(ExceptionType.InvalidData, error.message);
+      }
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
-    delete dto.confirmPassword;
-
-    ValidationEmail(this, dto.email)
-
-    const userId = randomUUID();
-    const addressId = randomUUID();
-
-    const result = await this.prisma.$transaction(async (prisma) => {
-      const userData = await prisma.user.create({
-        data: {
-          id: userId,
-          name: dto.name,
-          email: dto.email,
-          cpf: dto.cpf,
-          password: dto.password,
-          role: dto.role,
-          createdAt: new Date(),
-        },
-      });
-      const addressData = await prisma.address.create({
-        data: {
-          id: addressId,
-          cep: dto.address.cep,
-          district: dto.address.district,
-          road: dto.address.road,
-          number: dto.address.number,
-          user: { connect: { id: userData.id } },
-        },
-      });
-      return { ...userData, address: addressData };
-    });
-
-    delete result.updatedAt;
-
-    return result;
   }
 
   async findAll(): Promise<UserEntity[]> {
@@ -71,9 +87,13 @@ export class SignupService {
   }
 
   async findByEmail(email: string): Promise<UserEntity> {
-    return await this.prisma.user.findFirstOrThrow({
-      where: { email },
-    });
+    try {
+      return await this.prisma.user.findFirstOrThrow({    
+        where: { email },
+      });
+    } catch (error) {
+      return null
+    }
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
@@ -84,10 +104,11 @@ export class SignupService {
       }
     }
     delete dto.confirmPassword;
-    
+    await hash(dto.password, 12);
+    /* 
     if (dto.email) {
-      ValidationEmail(this, dto.email)
-    }
+      ValidationEmail(this, dto.email);
+    } */
 
     const result = await this.prisma.$transaction(async (prisma) => {
       const userUpdateData = {
