@@ -12,6 +12,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user-entity';
 import { SignupService } from './signup.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
 
 @ApiTags('Signup')
 @Controller('signup')
@@ -25,7 +26,9 @@ export class SignupController {
   async create(@Body() dto: CreateUserDto): Promise<UserEntity> {
     try {
       return await this.service.create(dto);
-    } catch (error) {}
+    } catch (error) {
+      HandleExceptions(error)
+    }
   }
 
   @ApiOperation({
@@ -35,7 +38,9 @@ export class SignupController {
   async findAll(): Promise<UserEntity[]> {
     try {
       return await this.service.findAll();
-    } catch (error) {}
+    } catch (error) {
+      HandleExceptions(error)
+    }
   }
 
   @ApiOperation({
@@ -45,7 +50,9 @@ export class SignupController {
   async findOne(@Param('id') id: string): Promise<UserEntity> {
     try {
       return await this.service.findOne(id);
-    } catch (error) {}
+    } catch (error) {
+      HandleExceptions(error)
+    }
   }
 
   @ApiOperation({
@@ -58,7 +65,9 @@ export class SignupController {
   ): Promise<UserEntity> {
     try {
       return await this.service.update(id, dto);
-    } catch (error) {}
+    } catch (error) {
+      HandleExceptions(error)
+    }
   }
 
   @ApiOperation({
@@ -68,6 +77,8 @@ export class SignupController {
   async delete(@Param('id') id: string) {
     try {
       await this.service.delete(id);
-    } catch (error) {}
+    } catch (error) {
+      HandleExceptions(error)
+    }
   }
 }
