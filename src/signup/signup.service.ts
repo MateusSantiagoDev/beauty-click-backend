@@ -4,17 +4,22 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user-entity';
 import { PrismaService } from '../prisma/prisma.service';
+import { ValidationEmail } from '../utils/unique-data-validation/unique-email';
 
 @Injectable()
 export class SignupService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    ) {}
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
     if (dto.password !== dto.confirmPassword) {
       throw new Error('Senha invalida!');
     }
     delete dto.confirmPassword;
-    
+
+    ValidationEmail(this, dto.email)
+
     const userId = randomUUID();
     const addressId = randomUUID();
 
@@ -52,16 +57,26 @@ export class SignupService {
     return await this.prisma.user.findMany({
       include: {
         address: true,
-      }
-    })
+      },
+    });
   }
 
   async findOne(id: string): Promise<UserEntity> {
-    return await this.prisma.user.findFirstOrThrow({ where: { id }, include: {
-      address: true,
-    }})
+    return await this.prisma.user.findFirstOrThrow({
+      where: { id },
+      include: {
+        address: true,
+      },
+    });
   }
-async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
+
+  async findByEmail(email: string): Promise<UserEntity> {
+    return await this.prisma.user.findFirstOrThrow({
+      where: { email },
+    });
+  }
+
+  async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
     await this.findOne(id);
     if (dto.password) {
       if (dto.password !== dto.confirmPassword) {
@@ -69,6 +84,10 @@ async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
       }
     }
     delete dto.confirmPassword;
+    
+    if (dto.email) {
+      ValidationEmail(this, dto.email)
+    }
 
     const result = await this.prisma.$transaction(async (prisma) => {
       const userUpdateData = {
@@ -100,10 +119,12 @@ async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
 
   async delete(id: string) {
     await this.prisma.$transaction(async (prisma) => {
-      await prisma.address.delete({ where: { 
-        userId: id,
-      }})
-      await prisma.user.delete({ where: { id }})
-    })
+      await prisma.address.delete({
+        where: {
+          userId: id,
+        },
+      });
+      await prisma.user.delete({ where: { id } });
+    });
   }
 }
