@@ -1,3 +1,5 @@
+import { AddressEntity } from '../../address/entities/address-entity';
+
 export interface UserEntity {
   id: string;
   name: string;
@@ -5,10 +7,7 @@ export interface UserEntity {
   cpf: string;
   password: string;
   role: string;
-  cep: string;
-  district: string;
-  road: string;
-  number: number;
+  address?: AddressEntity[];
   createdAt?: Date;
   updatedAt?: Date;
 }
