@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { hash } from 'bcrypt';
 import { randomUUID } from 'crypto';
+import { SignupRepository } from './repository/signup-repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user-entity';
-import { PrismaService } from '../prisma/prisma.service';
 import { IsValidEmail } from '../utils/validation-data/validation-email';
-import { hash } from 'bcrypt';
 import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 import { Validation } from 'src/utils/exceptions/error/validation';
 
 @Injectable()
 export class SignupService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly repository: SignupRepository) {}
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
     try {
@@ -35,7 +35,7 @@ export class SignupService {
         }
       }
       if (dto.password !== dto.confirmPassword) {
-        throw new Error('Senha invalida!');
+        throw new Validation('Senha invalida!');
       }
       delete dto.confirmPassword;
 
@@ -48,36 +48,14 @@ export class SignupService {
         throw new Validation('Email já cadastrado!');
       }
 
-      const userId = randomUUID();
-      const addressId = randomUUID();
-
-      const result = await this.prisma.$transaction(async (prisma) => {
-        const userData = await prisma.user.create({
-          data: {
-            id: userId,
-            name: dto.name,
-            email: dto.email,
-            cpf: dto.cpf,
-            password: await hash(dto.password, 12),
-            role: dto.role,
-            createdAt: new Date(),
-          },
-        });
-        const addressData = await prisma.address.create({
-          data: {
-            id: addressId,
-            cep: dto.address.cep,
-            district: dto.address.district,
-            road: dto.address.road,
-            number: dto.address.number,
-            user: { connect: { id: userData.id } },
-          },
-        });
-        return { ...userData, address: addressData };
-      });
-
+      const user: UserEntity = {
+        ...dto,
+        id: randomUUID(),
+        password: await hash(dto.password, 12),
+        createdAt: new Date(),
+      };
+      const result = await this.repository.create(user);
       delete result.updatedAt;
-
       return result;
     } catch (error) {
       if (error instanceof Validation) {
@@ -88,82 +66,73 @@ export class SignupService {
   }
 
   async findAll(): Promise<UserEntity[]> {
-    return await this.prisma.user.findMany({
-      include: {
-        address: true,
-      },
-    });
-  }
-
-  async findOne(id: string): Promise<UserEntity> {
-    return await this.prisma.user.findFirstOrThrow({
-      where: { id },
-      include: {
-        address: true,
-      },
-    });
+    try {
+      return await this.repository.findAll();
+    } catch (error) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
+    }
   }
 
   async findByEmail(email: string): Promise<UserEntity> {
     try {
-      return await this.prisma.user.findFirstOrThrow({
-        where: { email },
-      });
+      return await this.repository.findByEmail(email);
     } catch (error) {
-      return null;
+      return null
+    }
+  }
+
+  async findOne(id: string): Promise<UserEntity> {
+    try {
+      return await this.repository.findOne(id);
+    } catch (error) {
+      throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
-    await this.findOne(id);
-    if (dto.password) {
-      if (dto.password !== dto.confirmPassword) {
-        throw new Error('Senha invalida!');
+    try {
+      await this.findOne(id);
+      if (dto.password) {
+        if (dto.password !== dto.confirmPassword) {
+          throw new Validation('Senha invalida!');
+        }
+        await hash(dto.password, 12)
       }
-    }
-    delete dto.confirmPassword;
-    await hash(dto.password, 12);
-    /* 
-    if (dto.email) {
-      ValidationEmail(this, dto.email);
-    } */
+      delete dto.confirmPassword;
 
-    const result = await this.prisma.$transaction(async (prisma) => {
-      const userUpdateData = {
-        name: dto.name,
-        email: dto.email,
-        cpf: dto.cpf,
-        password: dto.password,
-        role: dto.role,
+      if (dto.email) {
+        const isValid = new IsValidEmail(this, dto.email);
+        if (!isValid.EmailRegex()) {
+          throw new Validation('Email Invalido!');
+        }
+
+        if (await isValid.UniqueEmail()) {
+          throw new Validation('Email já cadastrado!');
+        }
+      }
+
+      const user: Partial<UserEntity> = {
+        ...dto,
         updatedAt: new Date(),
-      };
-      const addressUpdateData = {
-        cep: dto.address.cep,
-        district: dto.address.district,
-        road: dto.address.road,
-        number: dto.address.number,
-      };
-      const updatedUser = await prisma.user.update({
-        where: { id },
-        data: userUpdateData,
-      });
-      const updatedAddress = await prisma.address.update({
-        where: { userId: id },
-        data: addressUpdateData,
-      });
-      return { ...updatedUser, address: updatedAddress };
-    });
-    return result;
+      }
+
+      return await this.repository.update(id, user);
+
+    } catch (error) {
+      if (error instanceof Validation) {
+        throw new Exceptions(ExceptionType.InvalidData, error.message);
+      }
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
+    }
   }
 
   async delete(id: string) {
-    await this.prisma.$transaction(async (prisma) => {
-      await prisma.address.delete({
-        where: {
-          userId: id,
-        },
-      });
-      await prisma.user.delete({ where: { id } });
-    });
+    try {
+      await this.findOne(id);
+
+      await this.repository.delete(id);
+    } catch (error) {
+      throw new Exceptions(ExceptionType.UnprocessableEntityException);
+    }
   }
 }

@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UserEntity } from '../entities/user-entity';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { Exceptions } from '../../utils/exceptions/exception';
 import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
 
@@ -10,7 +8,7 @@ import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
 export class SignupRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateUserDto): Promise<UserEntity> {
+  async create(data: UserEntity): Promise<UserEntity> {
     try {
       return await this.prisma.user.create({ data });
     } catch (error) {
@@ -36,15 +34,15 @@ export class SignupRepository {
 
   async findByEmail(email: string): Promise<UserEntity> {
     try {
-      return await this.prisma.user.findFirstOrThrow({ email });
+      return await this.prisma.user.findFirstOrThrow({ where: { email } });
     } catch (error) {
       return null;
     }
   }
 
-  async update(data: UpdateUserDto): Promise<UserEntity> {
+  async update(id: string, data: Partial<UserEntity>): Promise<UserEntity> {
     try {
-      return await this.prisma.user.update({ data });
+      return await this.prisma.user.update({ where: { id }, data });
     } catch (error) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
