@@ -35,28 +35,5 @@ export class CreateUserDto {
     description: 'Permissão do usuário',
     example: 'user',
   })
-  role: string;
-  @ApiProperty({
-    description: 'Cep',
-    example: '0000000',
-  })
-  cep: string;
-
-  @ApiProperty({
-    description: 'Bairro',
-    example: 'Jardim exemplo',
-  })
-  district: string;
-
-  @ApiProperty({
-    description: 'Rua',
-    example: 'Rua exemplo',
-  })
-  road: string;
-
-  @ApiProperty({
-    description: 'número da residência',
-    example: 300,
-  })
-  number: number;
+  role: string;  
 }

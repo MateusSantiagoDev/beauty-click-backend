@@ -8,7 +8,6 @@ import { UserEntity } from './entities/user-entity';
 import { IsValidEmail } from '../utils/validation-data/validation-email';
 import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
-import { Validation } from 'src/utils/exceptions/error/validation';
 
 @Injectable()
 export class SignupService {
@@ -22,10 +21,6 @@ export class SignupService {
       'password',
       'confirmPassword',
       'role',
-      'cep',
-      'district',
-      'road',
-      'number',
     ];
 
     for (const field of requiredFields) {
