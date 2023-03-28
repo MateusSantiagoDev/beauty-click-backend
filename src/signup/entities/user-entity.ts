@@ -5,16 +5,10 @@ export interface UserEntity {
   cpf: string;
   password: string;
   role: string;
-  address?: AddressEntity;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export interface AddressEntity {
-  id: string;
   cep: string;
   district: string;
   road: string;
   number: number;
-  userId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
