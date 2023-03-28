@@ -98,9 +98,8 @@ export class SignupService {
     return await this.repository.update(id, user);
   }
 
-  async delete(id: string) {
+  async delete(id: string): Promise<void> {
     await this.findOne(id);
-
     await this.repository.delete(id);
   }
 }

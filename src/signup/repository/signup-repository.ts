@@ -48,9 +48,9 @@ export class SignupRepository {
     }
   }
 
-  async delete(id: string): Promise<UserEntity> {
+  async delete(id: string): Promise<void> {
     try {
-      return await this.prisma.user.delete({ where: { id } });
+      await this.prisma.user.delete({ where: { id } });
     } catch (error) {
       throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }

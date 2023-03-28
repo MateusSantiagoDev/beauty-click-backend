@@ -70,9 +70,9 @@ export class AddressController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<AddressEntity> {
+  async delete(@Param('id') id: string): Promise<void> {
     try {
-      return await this.service.delete(id);
+      await this.service.delete(id);
     } catch (error) {
       HandleExceptions(error);
     }

@@ -74,7 +74,7 @@ export class SignupController {
     summary: 'Remover um usuário pelo ID',
   })
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: string): Promise<void> {
     try {
       await this.service.delete(id);
     } catch (error) {
