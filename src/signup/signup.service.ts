@@ -15,124 +15,97 @@ export class SignupService {
   constructor(private readonly repository: SignupRepository) {}
 
   async create(dto: CreateUserDto): Promise<UserEntity> {
-    try {
-      const requiredFields = [
-        'name',
-        'email',
-        'cpf',
-        'password',
-        'confirmPassword',
-        'role',
-        'cep',
-        'district',
-        'road',
-        'number',
-      ];
+    const requiredFields = [
+      'name',
+      'email',
+      'cpf',
+      'password',
+      'confirmPassword',
+      'role',
+      'cep',
+      'district',
+      'road',
+      'number',
+    ];
 
-      for (const field of requiredFields) {
-        if (!dto[field]) {
-          throw new Validation('Por favor informe todos os campos');
-        }
+    for (const field of requiredFields) {
+      if (!dto[field]) {
+        throw new Exceptions(
+          ExceptionType.InvalidData,
+          'por favor Informe todos os campos',
+        );
       }
-      if (dto.password !== dto.confirmPassword) {
-        throw new Validation('Senha invalida!');
-      }
-      delete dto.confirmPassword;
-
-      const isValid = new IsValidEmail(this, dto.email);
-      if (!isValid.EmailRegex()) {
-        throw new Validation('Email Invalido!');
-      }
-
-      if (await isValid.UniqueEmail()) {
-        throw new Validation('Email já cadastrado!');
-      }
-
-      const user: UserEntity = {
-        ...dto,
-        id: randomUUID(),
-        password: await hash(dto.password, 12),
-        createdAt: new Date(),
-      };
-      const result = await this.repository.create(user);
-      delete result.updatedAt;
-      return result;
-    } catch (error) {
-      if (error instanceof Validation) {
-        throw new Exceptions(ExceptionType.InvalidData, error.message);
-      }
-      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
+    if (dto.password !== dto.confirmPassword) {
+      throw new Exceptions(ExceptionType.InvalidData, 'Senha Invalida!');
+    }
+    delete dto.confirmPassword;
+
+    const isValid = new IsValidEmail(this, dto.email);
+    if (!isValid.EmailRegex()) {
+      throw new Exceptions(ExceptionType.NotFundData, 'Email invalido!');
+    }
+
+    if (await isValid.UniqueEmail()) {
+      throw new Exceptions(ExceptionType.NotFundData, 'Email já cadastrado!');
+    }
+
+    const user: UserEntity = {
+      ...dto,
+      id: randomUUID(),
+      password: await hash(dto.password, 12),
+      createdAt: new Date(),
+    };
+    const result = await this.repository.create(user);
+    delete result.updatedAt;
+    return result;
   }
 
   async findAll(): Promise<UserEntity[]> {
-    try {
-      return await this.repository.findAll();
-    } catch (error) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException);
-    }
+    return await this.repository.findAll();
   }
 
   async findByEmail(email: string): Promise<UserEntity> {
-    try {
-      return await this.repository.findByEmail(email);
-    } catch (error) {
-      return null
-    }
+    return await this.repository.findByEmail(email);
   }
 
   async findOne(id: string): Promise<UserEntity> {
-    try {
-      return await this.repository.findOne(id);
-    } catch (error) {
-      throw new Exceptions(ExceptionType.NotFundexception);
-    }
+    return await this.repository.findOne(id);
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserEntity> {
-    try {
-      await this.findOne(id);
-      if (dto.password) {
-        if (dto.password !== dto.confirmPassword) {
-          throw new Validation('Senha invalida!');
-        }
-        await hash(dto.password, 12)
+    await this.findOne(id);
+
+    if (dto.password) {
+      if (dto.password !== dto.confirmPassword) {
+        throw new Exceptions(ExceptionType.InvalidData, 'Senha Invalida!');
       }
-      delete dto.confirmPassword;
-
-      if (dto.email) {
-        const isValid = new IsValidEmail(this, dto.email);
-        if (!isValid.EmailRegex()) {
-          throw new Validation('Email Invalido!');
-        }
-
-        if (await isValid.UniqueEmail()) {
-          throw new Validation('Email já cadastrado!');
-        }
-      }
-
-      const user: Partial<UserEntity> = {
-        ...dto,
-        updatedAt: new Date(),
-      }
-
-      return await this.repository.update(id, user);
-
-    } catch (error) {
-      if (error instanceof Validation) {
-        throw new Exceptions(ExceptionType.InvalidData, error.message);
-      }
-      throw new Exceptions(ExceptionType.InternalServerErrorException);
+      await hash(dto.password, 12);
     }
+    delete dto.confirmPassword;
+
+    if (dto.email) {
+      const isValid = new IsValidEmail(this, dto.email);
+      if (!isValid.EmailRegex()) {
+        throw new Exceptions(ExceptionType.NotFundData, 'Email invalido!');
+      }
+
+      if (await isValid.UniqueEmail()) {
+        throw new Exceptions(ExceptionType.NotFundData, 'Email já cadastrado!');
+      }
+    }
+
+    const user: Partial<UserEntity> = {
+      ...dto,
+      updatedAt: new Date(),
+    };
+
+    return await this.repository.update(id, user);
   }
 
   async delete(id: string) {
-    try {
-      await this.findOne(id);
+    await this.findOne(id);
 
-      await this.repository.delete(id);
-    } catch (error) {
-      throw new Exceptions(ExceptionType.UnprocessableEntityException);
-    }
+    await this.repository.delete(id);
   }
 }
