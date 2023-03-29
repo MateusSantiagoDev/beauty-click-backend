@@ -6,6 +6,7 @@ import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressEntity } from './entities/address-entity';
 import { AddressRepository } from './repository/address-repository';
+import { ValidationRequiredFields } from '../utils/helpers/required-fields';
 
 @Injectable()
 export class AddressService {
@@ -22,14 +23,7 @@ export class AddressService {
       'userId',
     ];
 
-    for (const field of requiredFields) {
-      if (!dto[field]) {
-        throw new Exceptions(
-          ExceptionType.InvalidData,
-          'por favor Informe todos os campos',
-        );
-      }
-    }
+    ValidationRequiredFields(dto, requiredFields);
 
     const allAddess = await this.repository.findAll();
     for (const address of allAddess) {
