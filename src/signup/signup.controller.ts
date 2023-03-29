@@ -6,6 +6,8 @@ import {
   Param,
   Patch,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -73,6 +75,7 @@ export class SignupController {
   @ApiOperation({
     summary: 'Remover um usuário pelo ID',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {
     try {
