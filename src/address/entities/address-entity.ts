@@ -1,5 +1,3 @@
-import { UserEntity } from '../../signup/entities/user-entity';
-
 export interface AddressEntity {
   id: string;
   name: string;
@@ -8,7 +6,7 @@ export interface AddressEntity {
   district: string;
   road: string;
   number: number;
-  userId?: UserEntity[];
+  userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
