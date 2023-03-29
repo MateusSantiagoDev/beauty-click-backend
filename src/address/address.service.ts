@@ -46,12 +46,13 @@ export class AddressService {
     }
 
     const uniqueField = await this.repository.findByName(dto.name);
-    if (uniqueField) {
+    if (uniqueField && uniqueField.userId !== dto.userId) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
       );
     }
+
 
     const address: AddressEntity = {
       ...dto,
@@ -100,7 +101,7 @@ export class AddressService {
     }
 
     const uniqueField = await this.repository.findByName(dto.name);
-    if (uniqueField) {
+    if (uniqueField && uniqueField.userId !== dto.userId) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
