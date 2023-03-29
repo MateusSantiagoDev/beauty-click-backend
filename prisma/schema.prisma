@@ -25,7 +25,7 @@ model User {
 
 model Address {
   id       String @id
-  name     String @unique
+  name     String 
   image    String
   cep      String
   district String
