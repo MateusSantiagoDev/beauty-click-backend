@@ -31,6 +31,14 @@ export class AddressService {
       }
     }
 
+    const uniqueField = await this.repository.findByName(dto.name);
+    if (uniqueField) {
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        'Esse nome já esta sendo utilizado por outra empresa',
+      );
+    }
+
     const address: AddressEntity = {
       ...dto,
       id: randomUUID(),
@@ -41,7 +49,10 @@ export class AddressService {
     if (user.role === 'serviceProvider') {
       address.userId = user.id;
     } else {
-      throw new Exceptions(ExceptionType.UnauthorizedException, 'O cadastro de endereço é somente para empresas ou prestadores de serviço')
+      throw new Exceptions(
+        ExceptionType.UnauthorizedException,
+        'O cadastro de endereço é somente para empresas ou prestadores de serviço',
+      );
     }
 
     const result = await this.repository.create(address);
