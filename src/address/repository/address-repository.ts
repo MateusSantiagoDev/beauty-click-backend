@@ -39,8 +39,16 @@ export class AddressRepository {
     } catch (error) {
       throw new Exceptions(
         ExceptionType.NotFundexception,
-        'enhum usuário encontrado!',
+        'Nenhum usuário encontrado!',
       );
+    }
+  }
+
+  async findByName(name: string): Promise<AddressEntity> {
+    try {
+      return await this.prisma.address.findUniqueOrThrow({ where: { name } });
+    } catch (error) {
+      return null
     }
   }
 
