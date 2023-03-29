@@ -19,4 +19,12 @@ export class AddressValidation {
     }
     return true;
   }
+
+  async UniqueFieldValidation(): Promise<boolean> {
+    const uniqueField = await this.repository.findByName(this.value.name);
+    if (uniqueField && uniqueField.userId !== this.value.userId) {
+      return false;
+    }
+    return true;
+  }
 }

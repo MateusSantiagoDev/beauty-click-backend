@@ -35,8 +35,7 @@ export class AddressService {
       );
     }
 
-    const uniqueField = await this.repository.findByName(dto.name);
-    if (uniqueField && uniqueField.userId !== dto.userId) {
+    if (!await allAddress.UniqueFieldValidation()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
