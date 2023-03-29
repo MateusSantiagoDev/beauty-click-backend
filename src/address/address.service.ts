@@ -16,9 +16,10 @@ export class AddressService {
       'name',
       'image',
       'cep',
-      'distrct',
+      'district',
       'road',
       'number',
+      'userId',
     ];
 
     for (const field of requiredFields) {
@@ -35,6 +36,14 @@ export class AddressService {
       id: randomUUID(),
       createdAt: new Date(),
     };
+
+    const user = await this.repository.getUserById(address.userId);
+    if (user.role === 'serviceProvider') {
+      address.userId = user.id;
+    } else {
+      throw new Exceptions(ExceptionType.UnauthorizedException, 'O cadastro de endereço é somente para empresas ou prestadores de serviço')
+    }
+
     const result = await this.repository.create(address);
     delete result.updatedAt;
     return result;
@@ -55,7 +64,7 @@ export class AddressService {
       ...dto,
       updatedAt: new Date(),
     };
-    return await this.update(id, address);
+    return await this.repository.update(id, address);
   }
 
   async delete(id: string): Promise<void> {
