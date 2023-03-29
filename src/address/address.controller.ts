@@ -69,6 +69,9 @@ export class AddressController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Remover um endereço por ID',
+  })
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {
     try {
