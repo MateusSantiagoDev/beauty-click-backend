@@ -9,10 +9,6 @@ import { AddressEntity } from '../entities/address-entity';
 export class AddressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUserById(userId: string): Promise<UserEntity> {
-    return await this.prisma.user.findFirstOrThrow({ where: { id: userId } });
-  }
-
   async create(data: AddressEntity): Promise<AddressEntity> {
     try {
       return await this.prisma.address.create({ data });
@@ -34,6 +30,17 @@ export class AddressRepository {
       return await this.prisma.address.findFirstOrThrow({ where: { id } });
     } catch (error) {
       throw new Exceptions(ExceptionType.NotFundexception);
+    }
+  }
+
+  async getUserById(userId: string): Promise<UserEntity> {
+    try {
+      return await this.prisma.user.findFirstOrThrow({ where: { id: userId } });
+    } catch (error) {
+      throw new Exceptions(
+        ExceptionType.NotFundexception,
+        'enhum usuário encontrado!',
+      );
     }
   }
 
