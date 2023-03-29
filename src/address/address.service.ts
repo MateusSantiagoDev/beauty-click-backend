@@ -7,6 +7,7 @@ import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressEntity } from './entities/address-entity';
 import { AddressRepository } from './repository/address-repository';
 import { ValidationRequiredFields } from '../utils/helpers/required-fields';
+import { AddressValidation } from '../utils/helpers/address-validation';
 
 @Injectable()
 export class AddressService {
@@ -25,18 +26,13 @@ export class AddressService {
 
     ValidationRequiredFields(dto, requiredFields);
 
-    const allAddess = await this.repository.findAll();
-    for (const address of allAddess) {
-      if (
-        address.district === dto.district &&
-        address.road === dto.road &&
-        address.number === dto.number
-      ) {
-        throw new Exceptions(
-          ExceptionType.InvalidData,
-          'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
-        );
-      }
+    const allAddress = new AddressValidation(this.repository, dto);
+
+    if (!await allAddress.ValidAddress()) {
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
+      );
     }
 
     const uniqueField = await this.repository.findByName(dto.name);
@@ -46,7 +42,6 @@ export class AddressService {
         'Esse nome já esta sendo utilizado por outra empresa',
       );
     }
-
 
     const address: AddressEntity = {
       ...dto,

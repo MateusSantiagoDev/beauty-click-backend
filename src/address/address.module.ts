@@ -8,5 +8,6 @@ import { AddressRepository } from "./repository/address-repository";
     imports: [PrismaModule],
     controllers: [AddressController],
     providers: [AddressService, AddressRepository],
+    exports: [AddressRepository],
 })
 export class AddressModule {}
