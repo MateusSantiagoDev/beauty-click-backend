@@ -46,9 +46,11 @@ export class AddressRepository {
 
   async findByName(name: string): Promise<AddressEntity> {
     try {
-      return await this.prisma.address.findUniqueOrThrow({ where: { name } });
+      return await this.prisma.address.findFirst({
+        where: { name, userId: { not: null } },
+      });
     } catch (error) {
-      return null
+      return null;
     }
   }
 
