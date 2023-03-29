@@ -36,4 +36,9 @@ export class CreateAddressDto {
     example: 300,
   })
   number: number;
+
+  @ApiProperty({
+    description: 'ID do usuário com permissão de Perstador de serviço'
+  })
+  userId: string;
 }
