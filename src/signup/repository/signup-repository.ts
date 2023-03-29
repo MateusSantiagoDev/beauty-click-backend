@@ -18,7 +18,11 @@ export class SignupRepository {
 
   async findAll(): Promise<UserEntity[]> {
     try {
-      return await this.prisma.user.findMany();
+      return await this.prisma.user.findMany({
+        include: {
+          addresses: true
+        }
+      });
     } catch (error) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
