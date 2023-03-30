@@ -27,4 +27,11 @@ export class AddressValidation {
     }
     return true;
   }
+
+  async checkAuthorization(value: any): Promise<any> {
+    const user = await this.repository.getUserById(value)
+    if (user.role === 'serviceProvider') {
+      return user.id;
+    }
+  }
 }
