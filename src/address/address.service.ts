@@ -26,39 +26,37 @@ export class AddressService {
 
     ValidationRequiredFields(dto, requiredFields);
 
-    const allAddress = new AddressValidation(this.repository, dto);
+    const address = new AddressValidation(this.repository, dto);
 
-    if (!await allAddress.UniqueFieldValidation()) {
+    if (!await address.UniqueFieldValidation()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
       );
     }
 
-    if (!await allAddress.ValidAddress()) {
+    if (!await address.ValidAddress()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
       );
     }
 
-    const address: AddressEntity = {
+    const addressModel: AddressEntity = {
       ...dto,
       id: randomUUID(),
       createdAt: new Date(),
     };
 
-    const user = await this.repository.getUserById(address.userId);
-    if (user.role === 'serviceProvider') {
-      address.userId = user.id;
-    } else {
+    const user = address.checkAuthorization(addressModel.userId)
+    if (!await user) {
       throw new Exceptions(
         ExceptionType.UnauthorizedException,
         'O cadastro de endereço é somente para empresas ou prestadores de serviço',
       );
     }
 
-    const result = await this.repository.create(address);
+    const result = await this.repository.create(addressModel);
     delete result.updatedAt;
     return result;
   }
