@@ -26,16 +26,18 @@ export class AddressService {
 
     ValidationRequiredFields(dto, requiredFields);
 
-    const address = new AddressValidation(this.repository, dto);
+    await this.repository.getUserById(dto.userId)
+    
 
-    if (!await address.UniqueFieldValidation()) {
+    const address = new AddressValidation(this.repository, dto);
+    if (await address.isNameUnique()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
       );
     }
 
-    if (!await address.ValidAddress()) {
+    if (!await address.isAddressUnique()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
@@ -74,14 +76,14 @@ export class AddressService {
 
     const allAddress = new AddressValidation(this.repository, dto);
     
-    if (!await allAddress.UniqueFieldValidation()) {
+    if (!await allAddress.isNameUnique()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
       );
     }
 
-    if (!await allAddress.ValidAddress()) {
+    if (!await allAddress.isAddressUnique()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',

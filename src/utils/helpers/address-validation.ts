@@ -3,33 +3,27 @@ import { AddressRepository } from '../../address/repository/address-repository';
 export class AddressValidation {
   constructor(
     private readonly repository: AddressRepository,
-    private readonly value: any
-    ) {}
+    private readonly value: any,
+  ) {}
 
-  async ValidAddress(): Promise<boolean> {
+  async isAddressUnique(): Promise<boolean> {
     const allAddress = await this.repository.findAll();
-    for (const address of allAddress) {
-      if (
+    const foundAddress = allAddress.find(
+      (address) =>
         address.district === this.value.district &&
         address.road === this.value.road &&
-        address.number === this.value.number
-        ) {
-        return false;
-      }
-    }
-    return true;
+        address.number === this.value.number,
+    );
+    return !foundAddress;
   }
 
-  async UniqueFieldValidation(): Promise<boolean> {
+  async isNameUnique(): Promise<boolean> {
     const uniqueField = await this.repository.findByName(this.value.name);
-    if (uniqueField && uniqueField.userId !== this.value.userId) {
-      return false;
-    }
-    return true;
+    return uniqueField && uniqueField.userId !== this.value.userId;
   }
 
-  async checkAuthorization(value: any): Promise<any> {
-    const user = await this.repository.getUserById(value)
+  async checkAuthorization(value: string): Promise<string> {
+    const user = await this.repository.getUserById(value);
     if (user.role === 'serviceProvider') {
       return user.id;
     }
