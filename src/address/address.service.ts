@@ -28,17 +28,17 @@ export class AddressService {
 
     const allAddress = new AddressValidation(this.repository, dto);
 
-    if (!await allAddress.ValidAddress()) {
-      throw new Exceptions(
-        ExceptionType.InvalidData,
-        'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
-      );
-    }
-
     if (!await allAddress.UniqueFieldValidation()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
+      );
+    }
+
+    if (!await allAddress.ValidAddress()) {
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
       );
     }
 
@@ -74,25 +74,19 @@ export class AddressService {
   async update(id: string, dto: UpdateAddressDto): Promise<AddressEntity> {
     await this.findOne(id);
 
-    const allAddess = await this.repository.findAll();
-    for (const address of allAddess) {
-      if (
-        address.district === dto.district &&
-        address.road === dto.road &&
-        address.number === dto.number
-      ) {
-        throw new Exceptions(
-          ExceptionType.InvalidData,
-          'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
-        );
-      }
-    }
-
-    const uniqueField = await this.repository.findByName(dto.name);
-    if (uniqueField && uniqueField.userId !== dto.userId) {
+    const allAddress = new AddressValidation(this.repository, dto);
+    
+    if (!await allAddress.UniqueFieldValidation()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
+      );
+    }
+
+    if (!await allAddress.ValidAddress()) {
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
       );
     }
 
