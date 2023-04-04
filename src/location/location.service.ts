@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import axios from 'axios';
 import { AddressEntity } from './entities/location-entity';
 import { LocationRepository } from './repository/location-repository';
 import { randomUUID } from 'crypto';
+import { LocationMethod } from '../utils/database/location-api';
 
 @Injectable()
 export class LocationService {
   constructor(private readonly repository: LocationRepository) {}
   async create(address: string): Promise<AddressEntity> {
-    console.log(address);
-    const response = await axios.get(process.env.BASE_URL, {
-      params: {
-        address: address,
-        key: process.env.API_KEY,
-      },
-    });
+
+    const response = await LocationMethod(address)
 
     if (response.data.results && response.data.results.length > 0) {
       const result = response.data.results[0];
@@ -59,10 +54,7 @@ export class LocationService {
           addressDto.country = component.long_name;
         }
       });
-      console.log(addressDto);
-      const addressData = await this.repository.create(addressDto);
-      delete addressData.updatedAt;
-      return addressData;
+      return await this.repository.create(addressDto);
     } else {
       throw new Error('Endereço não encontrado');
     }
