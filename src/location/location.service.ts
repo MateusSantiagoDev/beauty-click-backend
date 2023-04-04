@@ -6,8 +6,7 @@ import { randomUUID } from 'crypto';
 
 @Injectable()
 export class LocationService {
- 
-    constructor(private readonly repository: LocationRepository) {}
+  constructor(private readonly repository: LocationRepository) {}
   async create(address: string): Promise<AddressEntity> {
     console.log(address);
     const response = await axios.get(process.env.BASE_URL, {
@@ -26,7 +25,7 @@ export class LocationService {
         latitude: result.geometry.location.lat.toString(),
         longitude: result.geometry.location.lng.toString(),
         formattedAddress: result.formatted_address,
-        street:null,
+        street: null,
         number: null,
         neighborhood: null,
         postalCode: null,
@@ -45,10 +44,13 @@ export class LocationService {
           addressDto.state = component.long_name;
         }
 
-        if (component.types.includes('sublocality_level_1') || component.types.includes('neighborhood')) {
+        if (
+          component.types.includes('sublocality_level_1') ||
+          component.types.includes('neighborhood')
+        ) {
           addressDto.neighborhood = component.long_name;
         }
-  
+
         if (component.types.includes('postal_code')) {
           addressDto.postalCode = component.long_name;
         }
@@ -59,7 +61,7 @@ export class LocationService {
       });
       console.log(addressDto);
       const addressData = await this.repository.create(addressDto);
-      delete addressData.updatedAt
+      delete addressData.updatedAt;
       return addressData;
     } else {
       throw new Error('Endereço não encontrado');
@@ -67,16 +69,15 @@ export class LocationService {
   }
 
   async findAll(): Promise<AddressEntity[]> {
-    return await this.repository.findAll()
+    return await this.repository.findAll();
   }
 
   async findOne(id: string): Promise<AddressEntity> {
-    return await this.repository.findOne(id)
+    return await this.repository.findOne(id);
   }
 
   async delete(id: string): Promise<void> {
-    return await this.repository.delete(id)
+    await this.findOne(id);
+    await this.repository.delete(id);
   }
- 
- 
 }

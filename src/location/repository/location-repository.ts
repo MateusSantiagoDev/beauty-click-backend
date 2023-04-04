@@ -6,40 +6,37 @@ import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 
 @Injectable()
 export class LocationRepository {
- 
   constructor(private readonly prisma: PrismaService) {}
 
   async create(address: AddressEntity): Promise<AddressEntity> {
     try {
       return await this.prisma.location.create({ data: address });
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
   async findAll(): Promise<AddressEntity[]> {
     try {
-      return await this.prisma.location.findMany()
+      return await this.prisma.location.findMany();
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
   async findOne(id: string): Promise<AddressEntity> {
     try {
-      return await this.prisma.location.findUniqueOrThrow({ where: { id }})
+      return await this.prisma.location.findUniqueOrThrow({ where: { id } });
     } catch (err) {
-      throw new Exceptions(ExceptionType.NotFundexception)
+      throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
 
-  
-
   async delete(id: string): Promise<void> {
     try {
-      await this.prisma.location.delete({ where: { id }})
+      await this.prisma.location.delete({ where: { id } });
     } catch (err) {
-      throw new Exceptions(ExceptionType.UnprocessableEntityException)
+      throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
-  } 
+  }
 }
