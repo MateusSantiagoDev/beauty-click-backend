@@ -1,62 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { AddressEntity } from './entities/location-entity';
 import { LocationRepository } from './repository/location-repository';
-import { randomUUID } from 'crypto';
-import { LocationMethod } from '../utils/database/location-api';
+import { LocationModel } from '../utils/helpers/location-model';
+import { LocationApi } from '../utils/database/location-api';
+import { ExtractAddressComponents } from '../utils/helpers/location-address-components';
+import { Validation } from '../utils/exceptions/error/validation';
 
 @Injectable()
 export class LocationService {
   constructor(private readonly repository: LocationRepository) {}
   async create(address: string): Promise<AddressEntity> {
 
-    const response = await LocationMethod(address)
+    
+    const response = await LocationApi(address);
 
     if (response.data.results && response.data.results.length > 0) {
       const result = response.data.results[0];
 
-      const addressDto: AddressEntity = {
-        id: randomUUID(),
-        address: address,
-        latitude: result.geometry.location.lat.toString(),
-        longitude: result.geometry.location.lng.toString(),
-        formattedAddress: result.formatted_address,
-        street: null,
-        number: null,
-        neighborhood: null,
-        postalCode: null,
-        city: null,
-        state: null,
-        country: null,
-        createdAt: new Date(),
-      };
+      const addressDto = LocationModel(result, address);
 
-      result.address_components.forEach((component) => {
-        if (component.types.includes('locality')) {
-          addressDto.city = component.long_name;
-        }
+      const addressComponents = ExtractAddressComponents(
+        result.address_components,
+      );
 
-        if (component.types.includes('administrative_area_level_1')) {
-          addressDto.state = component.long_name;
-        }
+      Object.assign(addressDto, addressComponents);
 
-        if (
-          component.types.includes('sublocality_level_1') ||
-          component.types.includes('neighborhood')
-        ) {
-          addressDto.neighborhood = component.long_name;
-        }
-
-        if (component.types.includes('postal_code')) {
-          addressDto.postalCode = component.long_name;
-        }
-
-        if (component.types.includes('country')) {
-          addressDto.country = component.long_name;
-        }
-      });
       return await this.repository.create(addressDto);
     } else {
-      throw new Error('Endereço não encontrado');
+      throw new Validation('Endereço não encontrado');
     }
   }
 
