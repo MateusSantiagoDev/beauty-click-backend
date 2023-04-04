@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AddressEntity } from './entities/location-entity';
 import { LocationService } from './location.service';
 import { AddressDto } from './dto/create-location.dto';
@@ -26,6 +26,14 @@ export class LocationController {
   @Get()
   async findAll(): Promise<AddressEntity[]> {
     return await this.service.findAll()
+  }
+
+  @ApiOperation({
+    summary: 'Buscar um endereço pelo ID'
+  })
+  @Get(':id')
+  async findOne(@Param('id') id: string ): Promise<AddressEntity> {
+    return await this.service.findOne(id)
   }
 
 }
