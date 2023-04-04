@@ -56,6 +56,7 @@ export class AddressController {
       HandleExceptions(error);
     }
   }
+  
   @ApiOperation({
     summary: 'Atualizar um endereço por ID',
   })
