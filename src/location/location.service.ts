@@ -6,8 +6,9 @@ import { randomUUID } from 'crypto';
 
 @Injectable()
 export class LocationService {
+ 
     constructor(private readonly repository: LocationRepository) {}
-  async getAddressInfo(address: string): Promise<AddressEntity> {
+  async create(address: string): Promise<AddressEntity> {
     console.log(address);
     const response = await axios.get(process.env.BASE_URL, {
       params: {
@@ -57,11 +58,15 @@ export class LocationService {
         }
       });
       console.log(addressDto);
-      const addressData = await this.repository.getAddressInfo(addressDto);
+      const addressData = await this.repository.create(addressDto);
       delete addressData.updatedAt
       return addressData;
     } else {
       throw new Error('Endereço não encontrado');
     }
+  }
+
+  async findAll(): Promise<AddressEntity[]> {
+    return await this.repository.findAll()
   }
 }

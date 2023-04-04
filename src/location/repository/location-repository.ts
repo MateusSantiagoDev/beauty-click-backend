@@ -4,9 +4,14 @@ import { AddressEntity } from '../entities/location-entity';
 
 @Injectable()
 export class LocationRepository {
+ 
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAddressInfo(address: AddressEntity): Promise<AddressEntity> {
+  async create(address: AddressEntity): Promise<AddressEntity> {
     return await this.prisma.location.create({ data: address });
+  }
+
+  async findAll(): Promise<AddressEntity[]> {
+    return await this.prisma.location.findMany()
   }
 }
