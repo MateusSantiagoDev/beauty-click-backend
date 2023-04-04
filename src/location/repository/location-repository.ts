@@ -19,6 +19,8 @@ export class LocationRepository {
     return await this.prisma.location.findUniqueOrThrow({ where: { id }})
   }
 
+  
+
   async delete(id: string): Promise<void> {
     await this.prisma.location.delete({ where: { id }})
   } 
