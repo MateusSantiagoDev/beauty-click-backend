@@ -25,7 +25,7 @@ model User {
 
 model Address {
   id       String @id
-  name     String 
+  name     String
   image    String
   cep      String
   district String
@@ -39,4 +39,24 @@ model Address {
   updatedAt DateTime? @map("updated_at")
 
   @@map("address")
+}
+
+model Location {
+  id               String @id
+  address          String
+  latitude         String
+  longitude        String
+  formattedAddress String
+  street           String?
+  number           Int?
+  neighborhood     String?
+  city             String?
+  state            String?
+  postalCode       String?
+  country          String?
+
+  createdAt DateTime? @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+
+  @@map("location")
 }
