@@ -12,6 +12,7 @@ async function bootstrap() {
   .addTag('Status')
   .addTag('Signup')
   .addTag('Address')
+  .addTag('Location')
   .build();
 
   const document = SwaggerModule.createDocument(app, config);
