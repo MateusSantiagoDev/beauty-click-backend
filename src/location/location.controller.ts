@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AddressEntity } from './entities/location-entity';
 import { LocationService } from './location.service';
 import { AddressDto } from './dto/create-location.dto';
@@ -10,7 +10,7 @@ export class LocationController {
   constructor(private service: LocationService) {}
 
   @ApiOperation({
-    summary: 'Adicionar um endereço'
+    summary: 'Adicionar uma localização'
   })
   @Post()
   async create(@Body() body: AddressDto ): Promise<AddressEntity> {
@@ -21,7 +21,7 @@ export class LocationController {
   }
 
   @ApiOperation({
-    summary: 'Buscar todos os endereços'
+    summary: 'Buscar todas as localizações'
   })
   @Get()
   async findAll(): Promise<AddressEntity[]> {
@@ -29,11 +29,19 @@ export class LocationController {
   }
 
   @ApiOperation({
-    summary: 'Buscar um endereço pelo ID'
+    summary: 'Buscar uma localização pelo ID'
   })
   @Get(':id')
   async findOne(@Param('id') id: string ): Promise<AddressEntity> {
     return await this.service.findOne(id)
+  }
+
+  @ApiOperation({
+    summary: 'Remover uma localização por ID'
+  })
+  @Delete(':id')
+  async delete(@Param('id') id: string ): Promise<void> {
+    await this.service.delete(id)
   }
 
 }

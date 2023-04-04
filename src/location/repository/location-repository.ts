@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AddressEntity } from '../entities/location-entity';
 
 @Injectable()
-export class LocationRepository { 
+export class LocationRepository {
  
   constructor(private readonly prisma: PrismaService) {}
 
@@ -18,4 +18,8 @@ export class LocationRepository {
   async findOne(id: string): Promise<AddressEntity> {
     return await this.prisma.location.findUniqueOrThrow({ where: { id }})
   }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.location.delete({ where: { id }})
+  } 
 }
