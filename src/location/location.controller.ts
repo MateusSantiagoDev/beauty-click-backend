@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { AddressEntity } from './entities/location-entity';
 import { LocationService } from './location.service';
 import { CreateAddressDto } from './dto/create-location.dto';
@@ -50,6 +50,7 @@ export class LocationController {
   @ApiOperation({
     summary: 'Remover uma localização por ID',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {
     try {
