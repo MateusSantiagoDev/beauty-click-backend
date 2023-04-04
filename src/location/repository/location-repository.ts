@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AddressEntity } from '../entities/location-entity';
+import { Exceptions } from 'src/utils/exceptions/exception';
+import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 
 @Injectable()
 export class LocationRepository {
@@ -8,20 +10,36 @@ export class LocationRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(address: AddressEntity): Promise<AddressEntity> {
-    return await this.prisma.location.create({ data: address });
+    try {
+      return await this.prisma.location.create({ data: address });
+    } catch (err) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException)
+    }
   }
 
   async findAll(): Promise<AddressEntity[]> {
-    return await this.prisma.location.findMany()
+    try {
+      return await this.prisma.location.findMany()
+    } catch (err) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException)
+    }
   }
 
   async findOne(id: string): Promise<AddressEntity> {
-    return await this.prisma.location.findUniqueOrThrow({ where: { id }})
+    try {
+      return await this.prisma.location.findUniqueOrThrow({ where: { id }})
+    } catch (err) {
+      throw new Exceptions(ExceptionType.NotFundexception)
+    }
   }
 
   
 
   async delete(id: string): Promise<void> {
-    await this.prisma.location.delete({ where: { id }})
+    try {
+      await this.prisma.location.delete({ where: { id }})
+    } catch (err) {
+      throw new Exceptions(ExceptionType.UnprocessableEntityException)
+    }
   } 
 }

@@ -12,7 +12,7 @@ export class AddressRepository {
   async create(data: AddressEntity): Promise<AddressEntity> {
     try {
       return await this.prisma.address.create({ data });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
@@ -20,7 +20,7 @@ export class AddressRepository {
   async findAll(): Promise<AddressEntity[]> {
     try {
       return await this.prisma.address.findMany();
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
@@ -28,7 +28,7 @@ export class AddressRepository {
   async findOne(id: string): Promise<AddressEntity> {
     try {
       return await this.prisma.address.findFirstOrThrow({ where: { id } });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
@@ -36,7 +36,7 @@ export class AddressRepository {
   async getUserById(userId: string): Promise<UserEntity> {
     try {
       return await this.prisma.user.findFirstOrThrow({ where: { id: userId } });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(
         ExceptionType.NotFundexception,
         'Nenhum usuário encontrado!',
@@ -49,7 +49,7 @@ export class AddressRepository {
       return await this.prisma.address.findFirst({
         where: { name, userId: { not: null } },
       });
-    } catch (error) {
+    } catch (err) {
       return null;
     }
   }
@@ -60,7 +60,7 @@ export class AddressRepository {
   ): Promise<AddressEntity> {
     try {
       return await this.prisma.address.update({ where: { id }, data });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
@@ -68,7 +68,7 @@ export class AddressRepository {
   async delete(id: string): Promise<void> {
     try {
       await this.prisma.address.delete({ where: { id } });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
   }

@@ -11,7 +11,7 @@ export class SignupRepository {
   async create(data: UserEntity): Promise<UserEntity> {
     try {
       return await this.prisma.user.create({ data });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
@@ -23,7 +23,7 @@ export class SignupRepository {
           addresses: true
         }
       });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
@@ -31,7 +31,7 @@ export class SignupRepository {
   async findOne(id: string): Promise<UserEntity> {
     try {
       return await this.prisma.user.findFirstOrThrow({ where: { id } });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
@@ -39,7 +39,7 @@ export class SignupRepository {
   async findByEmail(email: string): Promise<UserEntity> {
     try {
       return await this.prisma.user.findFirstOrThrow({ where: { email } });
-    } catch (error) {
+    } catch (err) {
       return null;
     }
   }
@@ -47,7 +47,7 @@ export class SignupRepository {
   async update(id: string, data: Partial<UserEntity>): Promise<UserEntity> {
     try {
       return await this.prisma.user.update({ where: { id }, data });
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
@@ -58,7 +58,7 @@ export class SignupRepository {
         await prisma.address.deleteMany({ where: { userId: id } });
         await prisma.user.delete({ where: { id } });
       })
-    } catch (error) {
+    } catch (err) {
       throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
   }

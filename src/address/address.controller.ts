@@ -28,8 +28,8 @@ export class AddressController {
   async create(@Body() dto: CreateAddressDto): Promise<AddressEntity> {
     try {
       return await this.service.create(dto);
-    } catch (error) {
-      HandleExceptions(error);
+    } catch (err) {
+      HandleExceptions(err);
     }
   }
 
@@ -40,8 +40,8 @@ export class AddressController {
   async findAll(): Promise<AddressEntity[]> {
     try {
       return await this.service.findAll();
-    } catch (error) {
-      HandleExceptions(error);
+    } catch (err) {
+      HandleExceptions(err);
     }
   }
 
@@ -52,8 +52,8 @@ export class AddressController {
   async findOne(@Param('id') id: string): Promise<AddressEntity> {
     try {
       return await this.service.findOne(id);
-    } catch (error) {
-      HandleExceptions(error);
+    } catch (err) {
+      HandleExceptions(err);
     }
   }
   
@@ -67,8 +67,8 @@ export class AddressController {
   ): Promise<AddressEntity> {
     try {
       return await this.service.update(id, dto);
-    } catch (error) {
-      HandleExceptions(error);
+    } catch (err) {
+      HandleExceptions(err);
     }
   }
 
@@ -80,8 +80,8 @@ export class AddressController {
   async delete(@Param('id') id: string): Promise<void> {
     try {
       await this.service.delete(id);
-    } catch (error) {
-      HandleExceptions(error);
+    } catch (err) {
+      HandleExceptions(err);
     }
   }
 }
