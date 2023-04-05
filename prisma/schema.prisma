@@ -48,7 +48,7 @@ model Location {
   longitude        String
   formattedAddress String
   street           String?
-  number           Int?
+  number           String?
   neighborhood     String?
   city             String?
   state            String?
