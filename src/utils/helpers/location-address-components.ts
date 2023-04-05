@@ -1,33 +1,22 @@
 export const ExtractAddressComponents = (components: any[]): any => {
-  const addressComponents: any = {};
-  components.forEach((component) => {
-    if (component.types.includes('administrative_area_level_2')) {
-      addressComponents.city = component.long_name;
+  const componentMapping: Record<string, string> = {
+    administrative_area_level_2: 'city',
+    administrative_area_level_1: 'state',
+    country: 'country',
+    sublocality_level_1: 'neighborhood',
+    postal_code: 'postalCode',
+    route: 'street',
+    street_number: 'number',
+  };
+
+  return components.reduce((addressComponents: any, component: any) => {
+    const componentType = component.types.find((type: string) => componentMapping[type]);
+
+    if (componentType) {
+      const propertyName = componentMapping[componentType];
+      addressComponents[propertyName] = component.long_name;
     }
 
-    if (component.types.includes('administrative_area_level_1')) {
-      addressComponents.state = component.short_name;
-    }
-
-    if (component.types.includes('country')) {
-      addressComponents.country = component.long_name;
-    }
-
-    if (component.types.includes('sublocality_level_1')) {
-      addressComponents.neighborhood = component.long_name;
-    }
-
-    if (component.types.includes('postal_code')) {
-      addressComponents.postalCode = component.long_name;
-    }
-
-    if (component.types.includes('route')) {
-      addressComponents.street = component.long_name;
-    }
-
-    if (component.types.includes('street_number')) {
-      addressComponents.number = component.long_name;
-    }
-  });
-  return addressComponents;
+    return addressComponents;
+  }, {});
 };
