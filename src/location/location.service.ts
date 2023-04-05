@@ -4,30 +4,34 @@ import { LocationRepository } from './repository/location-repository';
 import { LocationModel } from '../utils/helpers/location-model';
 import { LocationApi } from '../utils/database/location-api';
 import { ExtractAddressComponents } from '../utils/helpers/location-address-components';
-import { Validation } from '../utils/exceptions/error/validation';
+import { Exceptions } from 'src/utils/exceptions/exception';
+import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
+import { Validation } from 'src/utils/exceptions/error/validation';
 
 @Injectable()
 export class LocationService {
   constructor(private readonly repository: LocationRepository) {}
   async create(address: string): Promise<AddressEntity> {
+    try {
+      const response = await LocationApi(address);
+      if (response === undefined) {
+        throw new Validation('Endereço não encontrado!');
+      }
 
-    
-    const response = await LocationApi(address);
-
-    if (response.data.results && response.data.results.length > 0) {
-      const result = response.data.results[0];
-
-      const addressDto = LocationModel(result, address);
+      const addressDto = LocationModel(response, address);
 
       const addressComponents = ExtractAddressComponents(
-        result.address_components,
+        response.address_components,
       );
 
       Object.assign(addressDto, addressComponents);
 
       return await this.repository.create(addressDto);
-    } else {
-      throw new Validation('Endereço não encontrado');
+    } catch (err) {
+      if (err instanceof Validation) {
+        throw new Exceptions(ExceptionType.NotFundData, err.message);
+      }
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
