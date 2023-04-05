@@ -5,12 +5,11 @@ export class AddressEntity {
   longitude: string;
   formattedAddress: string;
   street: string;
-  number: number;
+  number: string;
   neighborhood: string;
   city: string;
   state: string;
   postalCode: string;
   country: string;
   createdAt?: Date;
-  updatedAt?: Date;
 }
