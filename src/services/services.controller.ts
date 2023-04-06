@@ -14,6 +14,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CreateServicesDto } from './dto/create-services.dto';
 import { ServicesEntity } from './entities/services-entity';
 import { UpdateServicesDto } from './dto/update-services.dto';
+import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
 
 @ApiTags('Services')
 @Controller('services')
@@ -27,7 +28,9 @@ export class ServicesController {
   async create(@Body() dto: CreateServicesDto): Promise<ServicesEntity> {
     try {
       return await this.service.create(dto);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -37,7 +40,9 @@ export class ServicesController {
   async findAll(): Promise<ServicesEntity[]> {
     try {
       return await this.service.findAll();
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -47,7 +52,9 @@ export class ServicesController {
   async findOne(@Param('id') id: string): Promise<ServicesEntity> {
     try {
       return await this.service.findOne(id);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -60,7 +67,9 @@ export class ServicesController {
   ): Promise<ServicesEntity> {
     try {
       return await this.service.update(id, dto);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -71,6 +80,8 @@ export class ServicesController {
   async delete(@Param('id') id: string): Promise<void> {
     try {
       await this.service.delete(id);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 }
