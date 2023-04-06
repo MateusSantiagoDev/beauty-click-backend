@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ServicesEntity } from '../entities/services-entity';
+import { Exceptions } from '../../utils/exceptions/exception';
+import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
+import { UserEntity } from '../../signup/entities/user-entity';
 
 @Injectable()
 export class ServicesRepository {
@@ -22,6 +25,17 @@ export class ServicesRepository {
     try {
       return await this.prisma.services.findFirstOrThrow({ where: { id } });
     } catch (err) {}
+  }
+
+  async getUserById(userId: string): Promise<UserEntity> {
+    try {
+      return await this.prisma.user.findFirstOrThrow({ where: { id: userId } });
+    } catch (err) {
+      throw new Exceptions(
+        ExceptionType.NotFundexception,
+        'Nenhum usuário encontrado!',
+      );
+    }
   }
 
   async update(

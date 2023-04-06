@@ -44,7 +44,7 @@ export class ServicesController {
     summary: 'Buscar um serviço por ID',
   })
   @Get(':id')
-  async findOne(@Param() id: string): Promise<ServicesEntity> {
+  async findOne(@Param('id') id: string): Promise<ServicesEntity> {
     try {
       return await this.service.findOne(id);
     } catch (err) {}
@@ -55,7 +55,7 @@ export class ServicesController {
   })
   @Patch(':id')
   async update(
-    @Param() id: string,
+    @Param('id') id: string,
     @Body() dto: UpdateServicesDto,
   ): Promise<ServicesEntity> {
     try {
@@ -68,7 +68,7 @@ export class ServicesController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  async delete(@Param() id: string): Promise<void> {
+  async delete(@Param('id') id: string): Promise<void> {
     try {
       await this.service.delete(id);
     } catch (err) {}
