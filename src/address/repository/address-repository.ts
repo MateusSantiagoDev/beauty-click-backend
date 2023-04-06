@@ -5,7 +5,6 @@ import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AddressEntity } from '../entities/address-entity';
 import { LocationService } from '../../location/location.service';
-import { Validation } from 'src/utils/exceptions/error/validation';
 
 @Injectable()
 export class AddressRepository {
@@ -24,12 +23,6 @@ export class AddressRepository {
 
       return response;
     } catch (err) {
-      if (err instanceof Validation) {
-        throw new Exceptions(
-          ExceptionType.InternalServerErrorException,
-          err.message,
-        );
-      }
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }

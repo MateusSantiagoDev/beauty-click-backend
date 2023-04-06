@@ -12,19 +12,25 @@ export class ServicesRepository {
   async create(data: ServicesEntity): Promise<ServicesEntity> {
     try {
       return await this.prisma.services.create({ data });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException)
+    }
   }
 
   async findAll(): Promise<ServicesEntity[]> {
     try {
       return await this.prisma.services.findMany();
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException)
+    }
   }
 
   async findOne(id: string): Promise<ServicesEntity> {
     try {
       return await this.prisma.services.findFirstOrThrow({ where: { id } });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.NotFundexception)
+    }
   }
 
   async getUserById(userId: string): Promise<UserEntity> {
@@ -44,12 +50,16 @@ export class ServicesRepository {
   ): Promise<ServicesEntity> {
     try {
       return await this.prisma.services.update({ where: { id }, data });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException)
+    }
   }
 
   async delete(id: string): Promise<void> {
     try {
       await this.prisma.services.delete({ where: { id } });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.UnprocessableEntityException)
+    }
   }
 }
