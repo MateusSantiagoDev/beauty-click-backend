@@ -17,25 +17,35 @@ export class CreateAddressDto {
     description: 'Cep',
     example: '0000000',
   })
-  cep: string;
+  postalCode: string;
 
   @ApiProperty({
     description: 'Bairro',
     example: 'Jardim exemplo',
   })
-  district: string;
+  neighborhood: string;
 
   @ApiProperty({
     description: 'Rua',
     example: 'Rua exemplo',
   })
-  road: string;
+  street: string;
 
   @ApiProperty({
     description: 'número da residência',
     example: 300,
   })
-  number: number;
+  number: string;
+
+  @ApiProperty({
+    description: 'Cidade',
+  })
+  city: string;
+
+  @ApiProperty({
+    description: 'Estado',
+  })
+  state: string;
 
   @ApiProperty({
     description: 'ID do usuário com permissão de Perstador de serviço'
