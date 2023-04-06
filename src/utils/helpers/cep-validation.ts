@@ -1,10 +1,10 @@
-import { cep } from 'cep-promise';
+import { postcodeValidator } from 'postcode-validator';
 
 export const isCep = async (value: string): Promise<boolean> => {
-  try {
-    await cep(value);
+  const isValid = postcodeValidator(value, 'BR');
+  if (isValid) {
     return true;
-  } catch (err) {
+  } else {
     return false;
   }
 };
