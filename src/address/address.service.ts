@@ -7,7 +7,7 @@ import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressEntity } from './entities/address-entity';
 import { AddressRepository } from './repository/address-repository';
 import { ValidationRequiredFields } from '../utils/helpers/required-fields';
-import { AddressValidation } from '../utils/helpers/address-validation';
+import { ValidationMethods } from '../utils/helpers/validation-methods';
 import { isCep } from '../utils/helpers/cep-validation';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class AddressService {
       throw new Exceptions(ExceptionType.InvalidData, 'cep invalido!');
     }
 
-    const address = new AddressValidation(this.repository, dto);
+    const address = new ValidationMethods(this.repository, dto);
     if (await address.isNameUnique()) {
       throw new Exceptions(
         ExceptionType.InvalidData,
@@ -81,7 +81,7 @@ export class AddressService {
   async update(id: string, dto: UpdateAddressDto): Promise<AddressEntity> {
     await this.findOne(id);
 
-    const allAddress = new AddressValidation(this.repository, dto);
+    const allAddress = new ValidationMethods(this.repository, dto);
 
     if (!(await allAddress.isNameUnique())) {
       throw new Exceptions(
