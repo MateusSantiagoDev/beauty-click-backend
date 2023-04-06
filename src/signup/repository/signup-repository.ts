@@ -20,8 +20,9 @@ export class SignupRepository {
     try {
       return await this.prisma.user.findMany({
         include: {
-          addresses: true
-        }
+          addresses: true,
+          Services: true,
+        },
       });
     } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
@@ -30,7 +31,13 @@ export class SignupRepository {
 
   async findOne(id: string): Promise<UserEntity> {
     try {
-      return await this.prisma.user.findFirstOrThrow({ where: { id } });
+      return await this.prisma.user.findFirstOrThrow({
+        where: { id },
+        include: {
+          addresses: true,
+          Services: true,
+        },
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.NotFundexception);
     }
@@ -56,8 +63,9 @@ export class SignupRepository {
     try {
       await this.prisma.$transaction(async (prisma) => {
         await prisma.address.deleteMany({ where: { userId: id } });
+        await prisma.services.deleteMany({ where: { userId: id } });
         await prisma.user.delete({ where: { id } });
-      })
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
