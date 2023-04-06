@@ -17,9 +17,11 @@ export class AddressService {
     const requiredFields = [
       'name',
       'image',
-      'cep',
-      'district',
-      'road',
+      'street',
+      'neighborhood',
+      'city',
+      'state',
+      'postalCode',
       'number',
       'userId',
     ];
