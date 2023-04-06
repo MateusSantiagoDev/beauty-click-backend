@@ -8,6 +8,7 @@ import { AddressEntity } from './entities/address-entity';
 import { AddressRepository } from './repository/address-repository';
 import { ValidationRequiredFields } from '../utils/helpers/required-fields';
 import { AddressValidation } from '../utils/helpers/address-validation';
+import { isCep } from '../utils/helpers/cep-validation';
 
 @Injectable()
 export class AddressService {
@@ -26,8 +27,12 @@ export class AddressService {
 
     ValidationRequiredFields(dto, requiredFields);
 
-    await this.repository.getUserById(dto.userId)
-    
+    await this.repository.getUserById(dto.userId);
+
+    const isValid = isCep(dto.cep);
+    if (!isValid) {
+      throw new Exceptions(ExceptionType.InvalidData, 'cep invalido!');
+    }
 
     const address = new AddressValidation(this.repository, dto);
     if (await address.isNameUnique()) {
@@ -37,7 +42,7 @@ export class AddressService {
       );
     }
 
-    if (!await address.isAddressUnique()) {
+    if (!(await address.isAddressUnique())) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
@@ -50,8 +55,8 @@ export class AddressService {
       createdAt: new Date(),
     };
 
-    const user = address.checkAuthorization(addressModel.userId)
-    if (!await user) {
+    const user = address.checkAuthorization(addressModel.userId);
+    if (!(await user)) {
       throw new Exceptions(
         ExceptionType.UnauthorizedException,
         'O cadastro de endereço é somente para empresas ou prestadores de serviço',
@@ -75,15 +80,15 @@ export class AddressService {
     await this.findOne(id);
 
     const allAddress = new AddressValidation(this.repository, dto);
-    
-    if (!await allAddress.isNameUnique()) {
+
+    if (!(await allAddress.isNameUnique())) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Esse nome já esta sendo utilizado por outra empresa',
       );
     }
 
-    if (!await allAddress.isAddressUnique()) {
+    if (!(await allAddress.isAddressUnique())) {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
