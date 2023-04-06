@@ -13,6 +13,7 @@ async function bootstrap() {
   .addTag('Signup')
   .addTag('Address')
   .addTag('Location')
+  .addTag('Services')
   .build();
 
   const document = SwaggerModule.createDocument(app, config);
