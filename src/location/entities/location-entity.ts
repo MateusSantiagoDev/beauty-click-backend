@@ -12,4 +12,5 @@ export class AddressEntity {
   postalCode: string;
   country: string;
   createdAt?: Date;
+  addressDataId: string;
 }
