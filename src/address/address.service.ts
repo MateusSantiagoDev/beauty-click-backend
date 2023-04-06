@@ -31,7 +31,7 @@ export class AddressService {
 
     await this.repository.getUserById(dto.userId);
 
-    const isValid = isCep(dto.cep);
+    const isValid = await isCep(dto.postalCode);
     if (!isValid) {
       throw new Exceptions(ExceptionType.InvalidData, 'cep invalido!');
     }
