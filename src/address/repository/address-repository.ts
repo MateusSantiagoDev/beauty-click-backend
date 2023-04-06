@@ -4,15 +4,32 @@ import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AddressEntity } from '../entities/address-entity';
+import { LocationService } from '../../location/location.service';
+import { Validation } from 'src/utils/exceptions/error/validation';
 
 @Injectable()
 export class AddressRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly locationService: LocationService,
+  ) {}
 
   async create(data: AddressEntity): Promise<AddressEntity> {
     try {
-      return await this.prisma.address.create({ data });
+      const response = await this.prisma.address.create({ data });
+
+      await this.locationService.create(
+        ` ${data.id}, ${data.number}, ${data.street}, ${data.neighborhood}, ${data.city}, ${data.state}, ${data.postalCode}`,
+      );
+
+      return response;
     } catch (err) {
+      if (err instanceof Validation) {
+        throw new Exceptions(
+          ExceptionType.InternalServerErrorException,
+          err.message,
+        );
+      }
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
