@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { AddressEntity } from './entities/location-entity';
 import { LocationService } from './location.service';
-import { CreateAddressDto } from './dto/create-location.dto';
+import { CreateLocationDto } from './dto/create-location.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
 
@@ -14,7 +14,7 @@ export class LocationController {
     summary: 'Adicionar uma localização',
   })
   @Post()
-  async create(@Body() body: CreateAddressDto): Promise<AddressEntity> {
+  async create(@Body() body: CreateLocationDto): Promise<AddressEntity> {
     try {
       const address = body.address;
       return await this.service.create(address);
