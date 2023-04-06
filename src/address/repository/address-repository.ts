@@ -77,7 +77,10 @@ export class AddressRepository {
 
   async delete(id: string): Promise<void> {
     try {
-      await this.prisma.address.delete({ where: { id } });
+      await this.prisma.$transaction(async (prisma) => {
+        await prisma.location.delete({ where: { addressDataId: id } });
+        await prisma.address.delete({ where: { id } });
+      })
     } catch (err) {
       throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
