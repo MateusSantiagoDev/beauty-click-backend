@@ -11,19 +11,6 @@ export class LocationController {
   constructor(private service: LocationService) {}
 
   @ApiOperation({
-    summary: 'Adicionar uma localização',
-  })
-  @Post()
-  async create(@Body() body: CreateLocationDto): Promise<AddressEntity> {
-    try {
-      const address = body.address;
-      return await this.service.create(address);
-    } catch (err) {
-      HandleExceptions(err);
-    }
-  }
-
-  @ApiOperation({
     summary: 'Buscar todas as localizações',
   })
   @Get()
