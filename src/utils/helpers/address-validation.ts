@@ -10,8 +10,8 @@ export class AddressValidation {
     const allAddress = await this.repository.findAll();
     const foundAddress = allAddress.find(
       (address) =>
-        address.district === this.value.district &&
-        address.road === this.value.road &&
+        address.neighborhood === this.value.neighborhood &&
+        address.street === this.value.street &&
         address.number === this.value.number,
     );
     return !foundAddress;
