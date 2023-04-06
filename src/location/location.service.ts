@@ -13,12 +13,19 @@ export class LocationService {
   constructor(private readonly repository: LocationRepository) {}
   async create(address: string): Promise<AddressEntity> {
     try {
-      const response = await LocationApi(address);
+      // removo o id do parametro address
+      const [id, ...params] = address.split(',');
+
+      // transforma novamente em uma única string
+      const addressString = params.join(',');
+
+      const response = await LocationApi(addressString);
+      
       if (response === undefined) {
         throw new Validation('Endereço não encontrado!');
       }
-
-      const addressDto = LocationModel(response, address);
+      // .trim() no id para remover os espaços
+      const addressDto = LocationModel(response, addressString, id.trim());
 
       const addressComponents = ExtractAddressComponents(
         response.address_components,
