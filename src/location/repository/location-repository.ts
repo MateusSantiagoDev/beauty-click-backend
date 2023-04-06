@@ -31,12 +31,4 @@ export class LocationRepository {
       throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
-
-  async delete(id: string): Promise<void> {
-    try {
-      await this.prisma.location.delete({ where: { id } });
-    } catch (err) {
-      throw new Exceptions(ExceptionType.UnprocessableEntityException);
-    }
-  }
 }

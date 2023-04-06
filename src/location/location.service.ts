@@ -20,7 +20,7 @@ export class LocationService {
       const addressString = params.join(',');
 
       const response = await LocationApi(addressString);
-      
+
       if (response === undefined) {
         throw new Validation('Endereço não encontrado!');
       }
@@ -48,10 +48,5 @@ export class LocationService {
 
   async findOne(id: string): Promise<AddressEntity> {
     return await this.repository.findOne(id);
-  }
-
-  async delete(id: string): Promise<void> {
-    await this.findOne(id);
-    await this.repository.delete(id);
   }
 }
