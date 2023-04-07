@@ -63,6 +63,7 @@ export class SignupRepository {
     try {
       await this.prisma.$transaction(async (prisma) => {
         await prisma.address.deleteMany({ where: { userId: id } });
+        await prisma.location.deleteMany({ where: { addressData: { userId: { startsWith: id }}} });
         await prisma.services.deleteMany({ where: { userId: id } });
         await prisma.user.delete({ where: { id } });
       });
