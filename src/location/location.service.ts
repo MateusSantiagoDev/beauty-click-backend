@@ -44,9 +44,13 @@ export class LocationService {
 
   async findAll(): Promise<AddressEntity[]> {
     return await this.repository.findAll();
-  }
+  } 
 
   async findOne(id: string): Promise<AddressEntity> {
     return await this.repository.findOne(id);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repository.delete(id)
   }
 }
