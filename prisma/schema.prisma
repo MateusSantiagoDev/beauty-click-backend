@@ -81,10 +81,9 @@ model Services {
 }
 
 model Calendar {
-  id        String @id
-  day       String
-  startTime String @map("start_time")
-  endTime   String @map("end_time")
+  id        String   @id
+  day       String[]
+  startTime String[] @map("start_time")
 
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @unique @map("address_id")
