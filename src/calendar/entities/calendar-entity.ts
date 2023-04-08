@@ -1,8 +1,7 @@
 export class CalendarEntity {
   id: string;
-  date: Date;
+  day: string;
   startTime: string;
   endTime: string;
   address: string[];
-  user: string[];
 }
