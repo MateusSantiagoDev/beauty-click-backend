@@ -12,30 +12,33 @@ export class CalendarService {
   async create(dto: CreateCalendarDto): Promise<CalendarEntity> {
     const calendar: CalendarEntity = {
       id: randomUUID(),
-      ...dto,
+      day: Array.isArray(dto.day) ? dto.day : [dto.day],
+      startTime: Array.isArray(dto.startTime) ? dto.startTime : [dto.startTime],
+      addressId: dto.addressId,
     };
     return await this.repository.create(calendar);
   }
 
   async findAll(): Promise<CalendarEntity[]> {
-    return await this.repository.findAll()
+    return await this.repository.findAll();
   }
 
   async findOne(id: string): Promise<CalendarEntity> {
-    return await this.repository.findOne(id)
+    return await this.repository.findOne(id);
   }
 
   async update(id: string, dto: UpdateCalendarDto): Promise<CalendarEntity> {
-    await this.findOne(id)
+    await this.findOne(id);
 
     const calendar: Partial<CalendarEntity> = {
-      ...dto,
-    }
-    return await this.repository.update(id, calendar)
+      day: Array.isArray(dto.day) ? dto.day : [dto.day],
+      startTime: Array.isArray(dto.startTime) ? dto.startTime : [dto.startTime],
+    };
+    return await this.repository.update(id, calendar);
   }
 
   async delete(id: string): Promise<void> {
-    await this.findOne(id)
-    await this.repository.delete(id)
+    await this.findOne(id);
+    await this.repository.delete(id);
   }
 }
