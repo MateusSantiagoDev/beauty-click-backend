@@ -22,5 +22,5 @@ export class CreateCalendarDto {
   @ApiProperty({
     description: 'Endereço do salão',
   })
-  address: string[];
+  addressId: string;
 }

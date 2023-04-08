@@ -3,5 +3,5 @@ export class CalendarEntity {
   day: string;
   startTime: string;
   endTime: string;
-  address: string[];
+  addressId: string;
 }

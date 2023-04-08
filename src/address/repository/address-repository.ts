@@ -29,7 +29,13 @@ export class AddressRepository {
 
   async findAll(): Promise<AddressEntity[]> {
     try {
-      return await this.prisma.address.findMany();
+      return await this.prisma.address.findMany({
+        include: {
+          user: true,
+          location: true,
+          calendar: true,
+        },
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
@@ -37,7 +43,14 @@ export class AddressRepository {
 
   async findOne(id: string): Promise<AddressEntity> {
     try {
-      return await this.prisma.address.findFirstOrThrow({ where: { id } });
+      return await this.prisma.address.findFirstOrThrow({
+        where: { id },
+        include: {
+          user: true,
+          location: true,
+          calendar: true,
+        },
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.NotFundexception);
     }
@@ -80,7 +93,7 @@ export class AddressRepository {
       await this.prisma.$transaction(async (prisma) => {
         await prisma.location.delete({ where: { addressDataId: id } });
         await prisma.address.delete({ where: { id } });
-      })
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
