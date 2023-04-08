@@ -17,7 +17,6 @@ model User {
 
   addresses Address[]
   Services  Services[]
-  calendar  Calendar[]
 
   createdAt DateTime? @map("created_at")
   updatedAt DateTime? @map("updated_at")
@@ -83,13 +82,12 @@ model Services {
 }
 
 model Calendar {
-  id        String   @id
-  date      DateTime
-  startTime String   @map("start_time")
-  endTime   String   @map("end_time")
+  id        String @id
+  day       String
+  startTime String @map("start_time")
+  endTime   String @map("end_time")
 
   address Address[]
-  user    User[]
 
   @@map("calendar")
 }
