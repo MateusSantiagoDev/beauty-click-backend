@@ -7,13 +7,14 @@ async function bootstrap() {
   
   const config = new DocumentBuilder()
   .setTitle('BeautyClick')
-  .setDescription('Sistema Completo de Gestão de Salão de Beleza')
+  .setDescription('Sistema Completo de Gestão para Salão de Beleza')
   .setVersion('1.0.0')
   .addTag('Status')
   .addTag('Signup')
   .addTag('Address')
   .addTag('Location')
   .addTag('Services')
+  .addTag('Calandar')
   .build();
 
   const document = SwaggerModule.createDocument(app, config);
