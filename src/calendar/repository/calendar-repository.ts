@@ -8,7 +8,13 @@ export class CalendarRepository {
 
   async create(data: CalendarEntity): Promise<CalendarEntity> {
     try {
-      return await this.prisma.calendar.create({ data });
+      return await this.prisma.calendar.create({
+        data: {
+          ...data,
+          day: { set: data.day },
+          startTime: { set: data.startTime },
+        },
+      });
     } catch (err) {}
   }
 
@@ -29,7 +35,14 @@ export class CalendarRepository {
     data: Partial<CalendarEntity>,
   ): Promise<CalendarEntity> {
     try {
-      return await this.prisma.calendar.update({ where: { id }, data });
+      return await this.prisma.calendar.update({
+        where: { id },
+        data: {
+          ...data,
+          day: { set: data.day },
+          startTime: { set: data.startTime },
+        },
+      });
     } catch (err) {}
   }
 
