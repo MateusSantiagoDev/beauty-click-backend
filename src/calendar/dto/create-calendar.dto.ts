@@ -2,17 +2,20 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCalendarDto {
   @ApiProperty({
-    description: 'Datas',
+    description: 'Dia disponível para agendamento',
+    example: 'segunda-feira',
   })
-  date: string;
+  day: string;
 
   @ApiProperty({
     description: 'Horário de início do atendimento',
+    example: '08:00hrs'
   })
   startTime: string;
 
   @ApiProperty({
     description: 'Horário de término do atendimento',
+    example: '09:00hrs'
   })
   endTime: string;
 
@@ -20,9 +23,4 @@ export class CreateCalendarDto {
     description: 'Endereço do salão',
   })
   address: string[];
-
-  @ApiProperty({
-    description: 'ID do cliente',
-  })
-  user: string[];
 }
