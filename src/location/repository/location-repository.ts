@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AddressEntity } from '../entities/location-entity';
+import { LocationEntity } from '../entities/location-entity';
 import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 
@@ -8,7 +8,7 @@ import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 export class LocationRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(address: AddressEntity): Promise<AddressEntity> {
+  async create(address: LocationEntity): Promise<LocationEntity> {
     try {
       return await this.prisma.location.create({ data: address });
     } catch (err) {
@@ -16,7 +16,7 @@ export class LocationRepository {
     }
   }
 
-  async findAll(): Promise<AddressEntity[]> {
+  async findAll(): Promise<LocationEntity[]> {
     try {
       return await this.prisma.location.findMany();
     } catch (err) {
@@ -24,7 +24,7 @@ export class LocationRepository {
     }
   }
 
-  async findOne(id: string): Promise<AddressEntity> {
+  async findOne(id: string): Promise<LocationEntity> {
     try {
       return await this.prisma.location.findUniqueOrThrow({ where: { id } });
     } catch (err) {

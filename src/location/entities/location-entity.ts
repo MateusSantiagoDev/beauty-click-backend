@@ -1,4 +1,4 @@
-export class AddressEntity {
+export class LocationEntity {
   id: string;
   address: string;
   latitude: string;
