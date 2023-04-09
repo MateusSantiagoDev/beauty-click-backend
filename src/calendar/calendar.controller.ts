@@ -14,6 +14,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { CreateCalendarDto } from './dto/create-calendar.dto';
 import { CalendarEntity } from './entities/calendar-entity';
 import { UpdateCalendarDto } from './dto/update-calendar.dto';
+import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
 
 @ApiTags('Calendar')
 @Controller('calendar')
@@ -27,7 +28,9 @@ export class CalendarController {
   async create(@Body() dto: CreateCalendarDto): Promise<CalendarEntity> {
     try {
       return await this.service.create(dto);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -37,7 +40,9 @@ export class CalendarController {
   async findAll(): Promise<CalendarEntity[]> {
     try {
       return await this.service.findAll();
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -47,7 +52,9 @@ export class CalendarController {
   async findOne(@Param('id') id: string): Promise<CalendarEntity> {
     try {
       return await this.service.findOne(id);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -60,7 +67,9 @@ export class CalendarController {
   ): Promise<CalendarEntity> {
     try {
       return await this.service.update(id, dto);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -71,6 +80,8 @@ export class CalendarController {
   async delete(@Param('id') id: string): Promise<void> {
     try {
       await this.service.delete(id);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 }
