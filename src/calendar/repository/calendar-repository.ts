@@ -4,7 +4,7 @@ import { CalendarEntity } from '../entities/calendar-entity';
 import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
 import { Exceptions } from '../../utils/exceptions/exception';
 import { AddressEntity } from '../../address/entities/address-entity';
-
+import { Validation } from '../../utils/exceptions/error/validation';
 
 @Injectable()
 export class CalendarRepository {
@@ -12,6 +12,15 @@ export class CalendarRepository {
 
   async create(data: CalendarEntity): Promise<CalendarEntity> {
     try {
+      const address = await this.prisma.calendar.findUnique({
+        where: { addressId: data.addressId },
+      });
+
+      if (address) {
+        throw new Validation(
+          'Já existe um Calendario de agendamentos para a loja em questão',
+        );
+      }
       return await this.prisma.calendar.create({
         data: {
           ...data,
@@ -20,7 +29,10 @@ export class CalendarRepository {
         },
       });
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      if (err instanceof Validation) {
+        throw new Exceptions(ExceptionType.UnauthorizedException, err.message);
+      }
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
@@ -28,7 +40,7 @@ export class CalendarRepository {
     try {
       return await this.prisma.calendar.findMany();
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
@@ -36,13 +48,15 @@ export class CalendarRepository {
     try {
       return await this.prisma.calendar.findFirstOrThrow({ where: { id } });
     } catch (err) {
-      throw new Exceptions(ExceptionType.NotFundexception)
+      throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
 
   async getAddressById(addressId: string): Promise<AddressEntity> {
     try {
-      return await this.prisma.address.findFirstOrThrow({ where: { id: addressId } });
+      return await this.prisma.address.findFirstOrThrow({
+        where: { id: addressId },
+      });
     } catch (err) {
       throw new Exceptions(
         ExceptionType.NotFundexception,
@@ -51,7 +65,6 @@ export class CalendarRepository {
     }
   }
 
-
   async update(
     id: string,
     data: Partial<CalendarEntity>,
@@ -59,14 +72,10 @@ export class CalendarRepository {
     try {
       return await this.prisma.calendar.update({
         where: { id },
-        data: {
-          ...data,
-          day: { set: data.day },
-          startTime: { set: data.startTime },
-        },
+        data,
       });
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
@@ -74,7 +83,7 @@ export class CalendarRepository {
     try {
       await this.prisma.calendar.delete({ where: { id } });
     } catch (err) {
-      throw new Exceptions(ExceptionType.UnprocessableEntityException)
+      throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
   }
 }
