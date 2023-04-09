@@ -7,6 +7,7 @@ import { randomUUID } from 'crypto';
 import { ValidationRequiredFields } from '../utils/helpers/required-fields';
 import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
+import { IsValidDay } from '../utils/helpers/isvalid-day';
 
 @Injectable()
 export class CalendarService {
@@ -18,22 +19,8 @@ export class CalendarService {
 
     await this.repository.getAddressById(dto.addressId);
 
-    const fields = [
-      'segunda-feira',
-      'terça-feira',
-      'quarta-feira',
-      'quinta-feira',
-      'sexta-feira',
-      'sabado',
-      'domingo',
-    ];
-
-    // verificando se existe day, se ele faz parte do objeto fields e se ele é único
-    if (
-      dto.day.length === 0 ||
-      !dto.day.every((day) => fields.includes(day)) ||
-      dto.day.length !== new Set(dto.day).size
-    ) {
+   
+    if (!IsValidDay(dto)) {
       throw new Exceptions(ExceptionType.InvalidData, 'O campo dia é inválido, verifique se foi preenchido corretamente!');
     }
 
@@ -68,22 +55,7 @@ export class CalendarService {
     await this.findOne(id);
 
     if (dto.day) {
-      const fields = [
-        'segunda-feira',
-        'terça-feira',
-        'quarta-feira',
-        'quinta-feira',
-        'sexta-feira',
-        'sabado',
-        'domingo',
-      ];
-
-      // verificando se existe day, se ele faz parte do objeto fields e se ele é único
-      if (
-        dto.day.length === 0 ||
-        !dto.day.every((day) => fields.includes(day)) ||
-        dto.day.length !== new Set(dto.day).size
-      ) {
+      if (!IsValidDay(dto)) {
         throw new Exceptions(ExceptionType.InvalidData, 'O campo dia é inválido, verifique se foi preenchido corretamente!');
       }
       dto.day = Array.isArray(dto.day) ? dto.day : [dto.day]
