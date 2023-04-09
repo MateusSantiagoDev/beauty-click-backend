@@ -29,16 +29,22 @@ export class CalendarService {
     ];
 
     // verificando se existe day, se ele faz parte do objeto fields e se ele é único
-    if (dto.day.length === 0 ||
+    if (
+      dto.day.length === 0 ||
       !dto.day.every((day) => fields.includes(day)) ||
-      dto.day.length !== new Set(dto.day).size) {
-    throw new Exceptions(ExceptionType.InvalidData, 'dia inválido!');
-  } 
+      dto.day.length !== new Set(dto.day).size
+    ) {
+      throw new Exceptions(ExceptionType.InvalidData, 'O campo dia é inválido, verifique se foi preenchido corretamente!');
+    }
 
     // verifica existe hora, se a hora tem o formato correto e se é única
-     const timeRegex = /^(0\d|1\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
-    if(dto.startTime.length === 0 || !dto.startTime.every((time) => timeRegex.test(time)) || dto.startTime.length !== new Set(dto.startTime).size) {
-      throw new Exceptions(ExceptionType.InvalidData, 'hora invalida!');
+    const timeRegex = /^(0\d|1\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+    if (
+      dto.startTime.length === 0 ||
+      !dto.startTime.every((time) => timeRegex.test(time)) ||
+      dto.startTime.length !== new Set(dto.startTime).size
+    ) {
+      throw new Exceptions(ExceptionType.InvalidData, 'O campo hora é inválido, verifique se foi preenchido corretamente!');
     }
 
     const calendar: CalendarEntity = {
@@ -61,9 +67,41 @@ export class CalendarService {
   async update(id: string, dto: UpdateCalendarDto): Promise<CalendarEntity> {
     await this.findOne(id);
 
+    if (dto.day) {
+      const fields = [
+        'segunda-feira',
+        'terça-feira',
+        'quarta-feira',
+        'quinta-feira',
+        'sexta-feira',
+        'sabado',
+        'domingo',
+      ];
+
+      // verificando se existe day, se ele faz parte do objeto fields e se ele é único
+      if (
+        dto.day.length === 0 ||
+        !dto.day.every((day) => fields.includes(day)) ||
+        dto.day.length !== new Set(dto.day).size
+      ) {
+        throw new Exceptions(ExceptionType.InvalidData, 'O campo dia é inválido, verifique se foi preenchido corretamente!');
+      }
+      dto.day = Array.isArray(dto.day) ? dto.day : [dto.day]
+    }
+    if (dto.startTime) {
+      // verifica existe hora, se a hora tem o formato correto e se é única
+      const timeRegex = /^(0\d|1\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+      if (
+        dto.startTime.length === 0 ||
+        !dto.startTime.every((time) => timeRegex.test(time)) ||
+        dto.startTime.length !== new Set(dto.startTime).size
+      ) {
+        throw new Exceptions(ExceptionType.InvalidData, 'O campo hora é inválido, verifique se foi preenchido corretamente!');
+      }
+      dto.startTime = Array.isArray(dto.startTime) ? dto.startTime : [dto.startTime]
+    }
     const calendar: Partial<CalendarEntity> = {
-      day: Array.isArray(dto.day) ? dto.day : [dto.day],
-      startTime: Array.isArray(dto.startTime) ? dto.startTime : [dto.startTime],
+      ...dto
     };
     return await this.repository.update(id, calendar);
   }
