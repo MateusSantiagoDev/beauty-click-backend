@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AddressEntity } from './entities/location-entity';
+import { LocationEntity } from './entities/location-entity';
 import { LocationRepository } from './repository/location-repository';
 import { LocationModel } from '../utils/helpers/location-model';
 import { LocationApi } from '../utils/database/location-api';
@@ -11,7 +11,7 @@ import { Validation } from 'src/utils/exceptions/error/validation';
 @Injectable()
 export class LocationService {
   constructor(private readonly repository: LocationRepository) {}
-  async create(address: string): Promise<AddressEntity> {
+  async create(address: string): Promise<LocationEntity> {
     try {
       // removo o id do parametro address
       const [id, ...params] = address.split(',');
@@ -42,11 +42,11 @@ export class LocationService {
     }
   }
 
-  async findAll(): Promise<AddressEntity[]> {
+  async findAll(): Promise<LocationEntity[]> {
     return await this.repository.findAll();
   }
 
-  async findOne(id: string): Promise<AddressEntity> {
+  async findOne(id: string): Promise<LocationEntity> {
     return await this.repository.findOne(id);
   }
 }
