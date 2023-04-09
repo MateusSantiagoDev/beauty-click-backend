@@ -20,6 +20,12 @@ export class CreateUserDto {
   cpf: string;
 
   @ApiProperty({
+    description: 'telefone para contato',
+    example: '11999999999',
+  })
+  contact: string;
+
+  @ApiProperty({
     description: 'Senha',
     example: '1234@',
   })
