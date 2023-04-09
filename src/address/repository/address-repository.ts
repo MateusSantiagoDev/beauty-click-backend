@@ -15,7 +15,12 @@ export class AddressRepository {
 
   async create(data: AddressEntity): Promise<AddressEntity> {
     try {
-      const response = await this.prisma.address.create({ data });
+      const response = await this.prisma.address.create({
+        data: {
+          ...data,
+          contacts: { set: data.contacts },
+        },
+      });
 
       await this.locationService.create(
         ` ${data.id}, ${data.number}, ${data.street}, ${data.neighborhood}, ${data.city}, ${data.state}, ${data.postalCode}`,
@@ -82,7 +87,13 @@ export class AddressRepository {
     data: Partial<AddressEntity>,
   ): Promise<AddressEntity> {
     try {
-      return await this.prisma.address.update({ where: { id }, data });
+      return await this.prisma.address.update({
+        where: { id },
+        data: {
+          ...data,
+          contacts: { set: data.contacts },
+        },
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
