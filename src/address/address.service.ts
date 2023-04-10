@@ -18,7 +18,7 @@ export class AddressService {
     const requiredFields = [
       'name',
       'image',
-      'contacts',
+      'phones',
       'street',
       'neighborhood',
       'city',
@@ -55,7 +55,7 @@ export class AddressService {
     const addressModel: AddressEntity = {
       id: randomUUID(),
       ...dto,
-      contacts: Array.isArray(dto.contacts) ? dto.contacts : [dto.contacts],
+      phones: Array.isArray(dto.phones) ? dto.phones : [dto.phones],
       createdAt: new Date(),
     };
 
@@ -101,7 +101,7 @@ export class AddressService {
 
     const address: Partial<AddressEntity> = {
       ...dto,
-      contacts: Array.isArray(dto.contacts) ? dto.contacts : [dto.contacts],
+      phones: Array.isArray(dto.phones) ? dto.phones : [dto.phones],
       updatedAt: new Date(),
     };
     return await this.repository.update(id, address);

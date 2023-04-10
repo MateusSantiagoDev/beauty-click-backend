@@ -18,7 +18,7 @@ export class AddressRepository {
       const response = await this.prisma.address.create({
         data: {
           ...data,
-          contacts: { set: data.contacts },
+          phones: { set: data.phones },
         },
       });
 
@@ -91,7 +91,7 @@ export class AddressRepository {
         where: { id },
         data: {
           ...data,
-          contacts: { set: data.contacts },
+          phones: { set: data.phones },
         },
       });
     } catch (err) {

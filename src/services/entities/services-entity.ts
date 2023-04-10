@@ -1,7 +1,7 @@
 export class ServicesEntity {
   id: string;
   name: string;
-  image: string[];
+  images: string[];
   price: string;
   addressId: string;
 }

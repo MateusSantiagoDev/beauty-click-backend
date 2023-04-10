@@ -11,7 +11,7 @@ export class CreateServicesDto {
     description: 'imagem do serviço',
     example: '[ "http://foto1.com", "http://foto2.com" ]',
   })
-  image: string[];
+  images: string[];
 
   @ApiProperty({
     description: 'Preço do serviço',

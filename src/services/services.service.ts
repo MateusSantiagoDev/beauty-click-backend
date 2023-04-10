@@ -13,7 +13,7 @@ export class ServicesService {
   constructor(private readonly repository: ServicesRepository) {}
 
   async create(dto: CreateServicesDto): Promise<ServicesEntity> {
-    const requiredFields = ['name', 'image'];
+    const requiredFields = ['name', 'images'];
 
     ValidationRequiredFields(dto, requiredFields);
 

@@ -21,9 +21,9 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'telefone para contato',
-    example: '11999999999',
+    example: '(11) 99999-9999',
   })
-  contact: string;
+  phone: string;
 
   @ApiProperty({
     description: 'Senha',

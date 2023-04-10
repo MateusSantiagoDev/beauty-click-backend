@@ -12,7 +12,7 @@ model User {
   name     String
   email    String
   cpf      String
-  contact  String
+  phone    String
   password String
   role     String
 
@@ -28,7 +28,7 @@ model Address {
   id           String   @id
   name         String
   image        String
-  contacts     String[]
+  phones       String[]
   postalCode   String
   neighborhood String
   street       String
@@ -72,10 +72,10 @@ model Location {
 }
 
 model Services {
-  id    String @id
-  name  String
-  image String[]
-  price String
+  id     String   @id
+  name   String
+  images String[]
+  price  String
 
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @map("address_id")

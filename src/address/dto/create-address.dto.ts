@@ -17,7 +17,7 @@ export class CreateAddressDto {
     description: 'Telefones para contato',
     example: '[ "11999999999", "11988888888" ]',
   })
-  contacts: string[]
+  phones: string[];
 
   @ApiProperty({
     description: 'Cep',
@@ -54,7 +54,7 @@ export class CreateAddressDto {
   state: string;
 
   @ApiProperty({
-    description: 'ID do usuário com permissão de Perstador de serviço'
+    description: 'ID do usuário com permissão de Perstador de serviço',
   })
   userId: string;
 }
