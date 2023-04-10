@@ -9,6 +9,7 @@ import { AddressRepository } from './repository/address-repository';
 import { ValidationRequiredFields } from '../utils/helpers/required-fields';
 import { ValidationMethods } from '../utils/helpers/validation-methods';
 import { isCep } from '../utils/helpers/cep-validation';
+import { IsValidPhone } from '../utils/helpers/isvalid-phone';
 
 @Injectable()
 export class AddressService {
@@ -49,6 +50,26 @@ export class AddressService {
       throw new Exceptions(
         ExceptionType.InvalidData,
         'Já existe um endereço cadastrado com o mesmo bairro, rua e número.',
+      );
+    }
+
+    const userPhones = await this.repository.getByPhone(dto.phones);
+
+    if (userPhones) {
+      const existingPhone = userPhones.phones.find((phone) =>
+        dto.phones.includes(phone),
+      );
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        `o telefone ${existingPhone} já esta cadastrado`,
+      );
+    }
+
+    if (!IsValidPhone(dto.phones) || dto.phones.length === 0) {
+      const invalidPhone = dto.phones.find((phone) => !IsValidPhone(phone));
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        `o telefone ${invalidPhone} é inválido, verifique se o número existe e se esta no formato correto`,
       );
     }
 
@@ -99,9 +120,31 @@ export class AddressService {
       );
     }
 
+    if (dto.phones) {
+      const userPhones = await this.repository.getByPhone(dto.phones);
+
+      if (userPhones) {
+        const existingPhone = userPhones.phones.find((phone) =>
+          dto.phones.includes(phone),
+        );
+        throw new Exceptions(
+          ExceptionType.InvalidData,
+          `o telefone ${existingPhone} já esta cadastrado`,
+        );
+      }
+
+      if (!IsValidPhone(dto.phones) || dto.phones.length === 0) {
+        const invalidPhone = dto.phones.find((phone) => !IsValidPhone(phone));
+        throw new Exceptions(
+          ExceptionType.InvalidData,
+          `o telefone ${invalidPhone} é inválido, verifique se o número existe e se esta no formato correto`,
+        );
+      }
+      dto.phones = Array.isArray(dto.phones) ? dto.phones : [dto.phones];
+    }
+
     const address: Partial<AddressEntity> = {
       ...dto,
-      phones: Array.isArray(dto.phones) ? dto.phones : [dto.phones],
       updatedAt: new Date(),
     };
     return await this.repository.update(id, address);
