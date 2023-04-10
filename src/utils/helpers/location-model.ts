@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
-import { AddressEntity } from '../../location/entities/location-entity';
+import { LocationEntity } from '../../location/entities/location-entity';
 
-export const LocationModel = (result: any, address: string, id: string): AddressEntity => ({
+export const LocationModel = (result: any, address: string, id: string): LocationEntity => ({
   id: randomUUID(),
   address: address,
   latitude: result.geometry.location.lat.toString(),

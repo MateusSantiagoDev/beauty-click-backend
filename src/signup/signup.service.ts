@@ -18,6 +18,7 @@ export class SignupService {
       'name',
       'email',
       'cpf',
+      'contact',
       'password',
       'confirmPassword',
       'role',

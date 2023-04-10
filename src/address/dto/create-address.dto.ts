@@ -14,6 +14,12 @@ export class CreateAddressDto {
   image: string;
 
   @ApiProperty({
+    description: 'Telefones para contato',
+    example: '[ "11999999999", "11988888888" ]',
+  })
+  contacts: string[]
+
+  @ApiProperty({
     description: 'Cep',
     example: '0000000',
   })

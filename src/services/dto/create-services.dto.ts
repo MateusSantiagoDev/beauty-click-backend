@@ -14,6 +14,12 @@ export class CreateServicesDto {
   image: string;
 
   @ApiProperty({
+    description: 'Preço do serviço',
+    example: '35,00',
+  })
+  price: string;
+
+  @ApiProperty({
     description: 'ID do usuário com permissão de Perstador de serviço'
   })
   userId: string;

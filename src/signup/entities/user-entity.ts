@@ -6,6 +6,7 @@ export interface UserEntity {
   name: string;
   email: string;
   cpf: string;
+  contact: string;
   password: string;
   role: string;
   address?: AddressEntity[];

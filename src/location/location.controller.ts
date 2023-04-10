@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { AddressEntity } from './entities/location-entity';
+import { LocationEntity } from './entities/location-entity';
 import { LocationService } from './location.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
@@ -13,7 +13,7 @@ export class LocationController {
     summary: 'Buscar todas as localizações',
   })
   @Get()
-  async findAll(): Promise<AddressEntity[]> {
+  async findAll(): Promise<LocationEntity[]> {
     try {
       return await this.service.findAll();
     } catch (err) {
@@ -25,7 +25,7 @@ export class LocationController {
     summary: 'Buscar uma localização pelo ID',
   })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<AddressEntity> {
+  async findOne(@Param('id') id: string): Promise<LocationEntity> {
     try {
       return await this.service.findOne(id);
     } catch (err) {

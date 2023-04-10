@@ -2,6 +2,7 @@ export interface AddressEntity {
   id: string;
   name: string;
   image: string;
+  contacts: string[];
   street: string;
   number: string;
   neighborhood: string;
