@@ -102,8 +102,8 @@ export class AddressRepository {
   async delete(id: string): Promise<void> {
     try {
       await this.prisma.$transaction(async (prisma) => {
+        await prisma.services.deleteMany({ where: { addressId: id } });
         await prisma.location.delete({ where: { addressDataId: id } });
-        await prisma.services.delete({ where: { addressId: id } });
         await prisma.calendar.delete({ where: { addressId: id } });
         await prisma.address.delete({ where: { id } });
       });
