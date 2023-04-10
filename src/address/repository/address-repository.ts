@@ -82,6 +82,20 @@ export class AddressRepository {
     }
   }
 
+  async getByPhone(phones: string[]): Promise<AddressEntity> {
+    try {
+      return await this.prisma.address.findFirst({
+        where: {
+          phones: {
+            hasSome: phones,
+          },
+        },
+      });
+    } catch (err) {
+      null;
+    }
+  }
+
   async update(
     id: string,
     data: Partial<AddressEntity>,
