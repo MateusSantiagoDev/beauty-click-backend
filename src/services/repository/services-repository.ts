@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { ServicesEntity } from '../entities/services-entity';
 import { Exceptions } from '../../utils/exceptions/exception';
 import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
-import { UserEntity } from '../../signup/entities/user-entity';
+import { AddressEntity } from '../../address/entities/address-entity';
 
 @Injectable()
 export class ServicesRepository {
@@ -33,13 +33,15 @@ export class ServicesRepository {
     }
   }
 
-  async getUserById(userId: string): Promise<UserEntity> {
+  async getAddressById(addressId: string): Promise<AddressEntity> {
     try {
-      return await this.prisma.user.findFirstOrThrow({ where: { id: userId } });
+      return await this.prisma.address.findFirstOrThrow({
+        where: { id: addressId },
+      });
     } catch (err) {
       throw new Exceptions(
         ExceptionType.NotFundexception,
-        'Nenhum usuário encontrado!',
+        'Nenhum Endereço encontrado!',
       );
     }
   }
