@@ -5,5 +5,5 @@ export class UpdateServicesDto extends PartialType(CreateServicesDto) {
   // omitindo a chave userId no metodo de update do swagger
   @ApiHideProperty()
   @ApiProperty({ readOnly: true })
-  userId: string;
+  addressId: string;
 }
