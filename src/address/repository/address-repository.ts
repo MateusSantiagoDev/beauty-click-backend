@@ -36,9 +36,9 @@ export class AddressRepository {
     try {
       return await this.prisma.address.findMany({
         include: {
-          user: true,
           location: true,
           calendar: true,
+          Services: true,
         },
       });
     } catch (err) {
@@ -51,9 +51,9 @@ export class AddressRepository {
       return await this.prisma.address.findFirstOrThrow({
         where: { id },
         include: {
-          user: true,
           location: true,
           calendar: true,
+          Services: true,
         },
       });
     } catch (err) {
@@ -103,6 +103,8 @@ export class AddressRepository {
     try {
       await this.prisma.$transaction(async (prisma) => {
         await prisma.location.delete({ where: { addressDataId: id } });
+        await prisma.services.delete({ where: { addressId: id } });
+        await prisma.calendar.delete({ where: { addressId: id } });
         await prisma.address.delete({ where: { id } });
       });
     } catch (err) {

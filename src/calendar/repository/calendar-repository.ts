@@ -38,7 +38,11 @@ export class CalendarRepository {
 
   async findAll(): Promise<CalendarEntity[]> {
     try {
-      return await this.prisma.calendar.findMany();
+      return await this.prisma.calendar.findMany({
+        include: {
+          address: true,
+        },
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
@@ -46,7 +50,12 @@ export class CalendarRepository {
 
   async findOne(id: string): Promise<CalendarEntity> {
     try {
-      return await this.prisma.calendar.findFirstOrThrow({ where: { id } });
+      return await this.prisma.calendar.findFirstOrThrow({
+        where: { id },
+        include: {
+          address: true,
+        },
+      });
     } catch (err) {
       throw new Exceptions(ExceptionType.NotFundexception);
     }

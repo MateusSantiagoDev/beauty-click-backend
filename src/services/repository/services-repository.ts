@@ -13,23 +13,30 @@ export class ServicesRepository {
     try {
       return await this.prisma.services.create({ data });
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
   async findAll(): Promise<ServicesEntity[]> {
     try {
-      return await this.prisma.services.findMany();
+      return await this.prisma.services.findMany({
+        include: {
+          address: true,
+        },
+      });
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
   async findOne(id: string): Promise<ServicesEntity> {
     try {
-      return await this.prisma.services.findFirstOrThrow({ where: { id } });
+      return await this.prisma.services.findFirstOrThrow({
+        where: { id },
+        include: { address: true },
+      });
     } catch (err) {
-      throw new Exceptions(ExceptionType.NotFundexception)
+      throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
 
@@ -53,7 +60,7 @@ export class ServicesRepository {
     try {
       return await this.prisma.services.update({ where: { id }, data });
     } catch (err) {
-      throw new Exceptions(ExceptionType.InternalServerErrorException)
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
 
@@ -61,7 +68,7 @@ export class ServicesRepository {
     try {
       await this.prisma.services.delete({ where: { id } });
     } catch (err) {
-      throw new Exceptions(ExceptionType.UnprocessableEntityException)
+      throw new Exceptions(ExceptionType.UnprocessableEntityException);
     }
   }
 }
