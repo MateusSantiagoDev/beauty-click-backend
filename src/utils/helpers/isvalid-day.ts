@@ -1,4 +1,4 @@
-export const IsValidDay = (dto: any): boolean => {
+export const IsValidDay = (value: any): boolean => {
   const fields = [
     'segunda-feira',
     'terça-feira',
@@ -11,8 +11,8 @@ export const IsValidDay = (dto: any): boolean => {
 
   // verificando se existe day, se ele faz parte do objeto fields e se ele é único
   return (
-    dto.day.length > 0 &&
-    dto.day.every((day: any) => fields.includes(day)) &&
-    dto.day.length === new Set(dto.day).size
+    value.day.length > 0 &&
+    value.day.every((day: any) => fields.includes(day)) &&
+    value.day.length === new Set(value.day).size
   );
 };
