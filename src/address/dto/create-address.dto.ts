@@ -15,7 +15,7 @@ export class CreateAddressDto {
 
   @ApiProperty({
     description: 'Telefones para contato',
-    example: '[ "11999999999", "11988888888" ]',
+    example: '[ "(11) 99999-9999", "(11) 98888-8888" ]',
   })
   phones: string[];
 
