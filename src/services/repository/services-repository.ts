@@ -40,6 +40,18 @@ export class ServicesRepository {
     }
   }
 
+  // verificando se o serviço ja esta adicionado ao endereço especifico
+  async getByService(name: string, addressId: string): Promise<ServicesEntity> {
+    try {
+      return await this.prisma.services.findFirst({
+        where: { name, addressId },
+        include: { address: true },
+      });
+    } catch (err) {
+      null;
+    }
+  }
+
   async getAddressById(addressId: string): Promise<AddressEntity> {
     try {
       return await this.prisma.address.findFirstOrThrow({
