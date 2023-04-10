@@ -78,7 +78,7 @@ model Services {
   price String
 
   address   Address? @relation(fields: [addressId], references: [id])
-  addressId String?  @unique @map("address_id")
+  addressId String?  @map("address_id")
 
   @@map("services")
 }
