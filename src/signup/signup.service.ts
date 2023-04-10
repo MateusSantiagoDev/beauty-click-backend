@@ -8,6 +8,7 @@ import { UserEntity } from './entities/user-entity';
 import { IsValidEmail } from '../utils/validation-data/validation-email';
 import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
+import { IsValidPhone } from '../utils/helpers/isvalid-phone';
 
 @Injectable()
 export class SignupService {
@@ -18,7 +19,7 @@ export class SignupService {
       'name',
       'email',
       'cpf',
-      'contact',
+      'phone',
       'password',
       'confirmPassword',
       'role',
@@ -44,6 +45,21 @@ export class SignupService {
 
     if (await isValid.UniqueEmail()) {
       throw new Exceptions(ExceptionType.NotFundData, 'Email já cadastrado!');
+    }
+
+    const userPhone = await this.repository.getByPhone(dto.phone);
+    if (userPhone) {
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        `o telefone ${dto.phone} já esta cadastrado`,
+      );
+    }
+
+    if (!IsValidPhone(dto.phone)) {
+      throw new Exceptions(
+        ExceptionType.InvalidData,
+        `o telefone ${dto.phone} é inválido, verifique se o número existe e se esta no formato correto`,
+      );
     }
 
     const user: UserEntity = {
@@ -88,6 +104,23 @@ export class SignupService {
 
       if (await isValid.UniqueEmail()) {
         throw new Exceptions(ExceptionType.NotFundData, 'Email já cadastrado!');
+      }
+    }
+
+    if (dto.phone) {
+      const userPhone = await this.repository.getByPhone(dto.phone);
+      if (userPhone) {
+        throw new Exceptions(
+          ExceptionType.InvalidData,
+          `o telefone ${dto.phone} já esta cadastrado`,
+        );
+      }
+
+      if (!IsValidPhone(dto.phone)) {
+        throw new Exceptions(
+          ExceptionType.InvalidData,
+          `o telefone ${dto.phone} é inválido, verifique se o número existe e se esta no formato correto`,
+        );
       }
     }
 
