@@ -41,6 +41,16 @@ export class SignupRepository {
     }
   }
 
+  async getByPhone(phone: string): Promise<UserEntity> {
+    try {
+      return await this.prisma.user.findFirst({
+        where: { phone },
+      });
+    } catch (err) {
+      null;
+    }
+  }
+
   async findByEmail(email: string): Promise<UserEntity> {
     try {
       return await this.prisma.user.findFirstOrThrow({ where: { email } });
