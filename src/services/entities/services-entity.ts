@@ -3,5 +3,5 @@ export class ServicesEntity {
   name: string;
   image: string;
   price: string;
-  userId: string;
+  addressId: string;
 }
