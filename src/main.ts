@@ -16,6 +16,7 @@ async function bootstrap() {
   .addTag('Location')
   .addTag('Services')
   .addTag('Calendar')
+  .addBearerAuth()
   .build();
 
   const document = SwaggerModule.createDocument(app, config);
