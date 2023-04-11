@@ -10,12 +10,12 @@ async function bootstrap() {
   .setDescription('Sistema Completo de Gestão para Salão de Beleza')
   .setVersion('1.0.0')
   .addTag('Status')
+  .addTag('Login')
   .addTag('Signup')
   .addTag('Address')
   .addTag('Location')
   .addTag('Services')
   .addTag('Calendar')
-  .addTag('Login')
   .build();
 
   const document = SwaggerModule.createDocument(app, config);
