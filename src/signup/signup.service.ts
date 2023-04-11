@@ -5,7 +5,7 @@ import { SignupRepository } from './repository/signup-repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user-entity';
-import { IsValidEmail } from '../utils/validation-data/validation-email';
+import { IsValidEmail } from '../utils/helpers/validation-email';
 import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 import { IsValidPhone } from '../utils/helpers/isvalid-phone';
