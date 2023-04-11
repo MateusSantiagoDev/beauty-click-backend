@@ -24,7 +24,7 @@ export class LoginService {
     const user = await this.repository.findOne(email);
     if (!user) {
       throw new Exceptions(
-        ExceptionType.InternalServerErrorException,
+        ExceptionType.UnauthorizedException,
         'Email e/ou senha Inválidos!',
       );
     }
