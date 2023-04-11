@@ -8,15 +8,19 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user-entity';
 import { SignupService } from './signup.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Signup')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('signup')
 export class SignupController {
   constructor(private readonly service: SignupService) {}

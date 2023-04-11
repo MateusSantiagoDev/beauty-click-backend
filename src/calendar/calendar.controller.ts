@@ -8,15 +8,19 @@ import {
   HttpStatus,
   Param,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateCalendarDto } from './dto/create-calendar.dto';
 import { CalendarEntity } from './entities/calendar-entity';
 import { UpdateCalendarDto } from './dto/update-calendar.dto';
 import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Calendar')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('calendar')
 export class CalendarController {
   constructor(private readonly service: CalendarService) {}

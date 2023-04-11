@@ -8,15 +8,19 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { HandleExceptions } from 'src/utils/exceptions/handle-exceptions';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressEntity } from './entities/address-entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Address')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('address')
 export class AddressController {
   constructor(private readonly service: AddressService) {}

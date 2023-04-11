@@ -8,15 +8,19 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateServicesDto } from './dto/create-services.dto';
 import { ServicesEntity } from './entities/services-entity';
 import { UpdateServicesDto } from './dto/update-services.dto';
 import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Services')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('services')
 export class ServicesController {
   constructor(private readonly service: ServicesService) {}
