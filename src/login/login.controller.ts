@@ -5,6 +5,9 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
+import { UserEntity } from '../signup/entities/user-entity';
+import { LoggedUser } from './decorator/logged-user-decorator';
+import { IsValidUserAuthorization } from './decorator/isvalid-user-authorization-decorator';
 
 @ApiTags('Login')
 @Controller('login')
@@ -30,9 +33,9 @@ export class LoginController {
   })
   // valida o jwt
   @Get()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), IsValidUserAuthorization)
   @ApiBearerAuth()
-  authenticatedUser() {
-   return { message: 'Autenticação bem sucedida' }
+  authenticatedUser(@LoggedUser() user: UserEntity) {
+   return user
   }
 }
