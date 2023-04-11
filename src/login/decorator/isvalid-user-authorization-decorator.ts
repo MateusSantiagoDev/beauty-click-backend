@@ -7,14 +7,14 @@ export class IsValidUserAuthorization implements CanActivate {
     const httpRequest = context.switchToHttp().getRequest();
     const request = httpRequest.user;
 
-    if (request.user !== 'user' || request.user !== 'serviceProvider') {
+    if (request.role !== 'user' && request.role !== 'serviceProvider') {
       throw new Exceptions(
         ExceptionType.UnauthorizedException,
         'Usuário não autorizado',
       );
     }
-    delete request.user.role;
-    delete request.user.password;
-    return request.user;
+    delete request.role;
+    delete request.password;
+    return request;
   }
 }
