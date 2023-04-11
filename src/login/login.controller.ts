@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -13,6 +13,7 @@ export class LoginController {
     summary: 'Login de usuário',
   })
   @Post()
+  @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto): Promise<LoginResponseDto> {
     try {
       return await this.service.login(dto);
