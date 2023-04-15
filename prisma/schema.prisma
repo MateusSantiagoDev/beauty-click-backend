@@ -16,10 +16,11 @@ model User {
   password String
   role     String
 
-  addresses Address[]
-
   createdAt DateTime? @map("created_at")
   updatedAt DateTime? @map("updated_at")
+
+  schedules Schedule[]
+  addresses Address[]
 
   @@map("user")
 }
@@ -42,9 +43,10 @@ model Address {
   createdAt DateTime? @map("created_at")
   updatedAt DateTime? @map("updated_at")
 
-  Services Services[]
-  location Location?
-  calendar Calendar?
+  schedules Schedule[]
+  Services  Services[]
+  location  Location?
+  calendar  Calendar?
 
   @@map("address")
 }
@@ -72,13 +74,15 @@ model Location {
 }
 
 model Services {
-  id     String   @id
-  name   String
-  images String[]
-  price  String
+  id          String   @id
+  serviceName String   @map("service_name")
+  images      String[]
+  price       String
 
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @map("address_id")
+
+  schedules Schedule[]
 
   @@map("services")
 }
@@ -91,5 +95,27 @@ model Calendar {
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @unique @map("address_id")
 
+  schedules Schedule[]
+
   @@map("calendar")
+}
+
+model Schedule {
+  id          String   @id
+  day         String[]
+  startTime   String[]
+  serviceName String[]
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @map("user_id")
+
+  address   Address? @relation(fields: [addressId], references: [id])
+  addressId String?  @map("address_id")
+
+  calendar   Calendar? @relation(fields: [calendarId], references: [id])
+  calendarId String?   @map("calendar_id")
+
+  services Services[]
+
+  @@map("schedule")
 }
