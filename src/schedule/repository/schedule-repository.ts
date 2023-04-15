@@ -3,7 +3,6 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { ScheduleEntity } from '../entities/schedule-entity';
 import { Exceptions } from '../../utils/exceptions/exception';
 import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
-import { Validation } from '../../utils/exceptions/error/validation';
 import { UserEntity } from '../../signup/entities/user-entity';
 import { AddressEntity } from '../../address/entities/address-entity';
 import { ServicesEntity } from '../../services/entities/services-entity';
@@ -17,9 +16,6 @@ export class ScheduleRepository {
     try {
       return await this.prisma.schedule.create({ data });
     } catch (err) {
-      if (err instanceof Validation) {
-        throw new Exceptions(ExceptionType.InvalidData, err.message);
-      }
       throw new Exceptions(ExceptionType.InternalServerErrorException);
     }
   }
@@ -33,7 +29,9 @@ export class ScheduleRepository {
           services: true,
         },
       });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
+    }
   }
 
   async getByUser(userId: string): Promise<UserEntity> {
@@ -83,7 +81,9 @@ export class ScheduleRepository {
   async findOne(id: string): Promise<ScheduleEntity> {
     try {
       return await this.prisma.schedule.findUniqueOrThrow({ where: { id } });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.NotFundData);
+    }
   }
 
   async update(
@@ -92,12 +92,16 @@ export class ScheduleRepository {
   ): Promise<ScheduleEntity> {
     try {
       return await this.prisma.schedule.update({ where: { id }, data });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.InternalServerErrorException);
+    }
   }
 
   async delete(id: string): Promise<void> {
     try {
       await this.prisma.schedule.delete({ where: { id } });
-    } catch (err) {}
+    } catch (err) {
+      throw new Exceptions(ExceptionType.UnprocessableEntityException);
+    }
   }
 }
