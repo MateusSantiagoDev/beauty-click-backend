@@ -40,7 +40,9 @@ export class ScheduleController {
   async findAll(): Promise<ScheduleEntity[]> {
     try {
       return await this.service.findAll();
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -50,7 +52,9 @@ export class ScheduleController {
   async findOne(@Param('id') id: string): Promise<ScheduleEntity> {
     try {
       return await this.service.findOne(id);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -63,7 +67,9 @@ export class ScheduleController {
   ): Promise<ScheduleEntity> {
     try {
       return await this.service.update(id, dto);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 
   @ApiOperation({
@@ -74,6 +80,8 @@ export class ScheduleController {
   async delete(@Param('id') id: string): Promise<void> {
     try {
       await this.service.delete(id);
-    } catch (err) {}
+    } catch (err) {
+      HandleExceptions(err);
+    }
   }
 }
