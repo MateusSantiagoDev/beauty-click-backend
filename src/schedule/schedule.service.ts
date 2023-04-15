@@ -6,6 +6,7 @@ import { randomUUID } from 'crypto';
 import { ValidationRequiredFields } from '../utils/helpers/required-fields';
 import { Exceptions } from 'src/utils/exceptions/exception';
 import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
+import { UpdateScheduleDto } from './dto/update-schedule.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -84,5 +85,64 @@ export class ScheduleService {
 
   async findAll(): Promise<ScheduleEntity[]> {
     return await this.repository.findAll();
+  }
+
+  async findOne(id: string): Promise<ScheduleEntity> {
+    return await this.repository.findOne(id);
+  }
+
+  async update(id: string, dto: UpdateScheduleDto): Promise<ScheduleEntity> {
+    await this.findOne(id);
+
+    if (dto.serviceName) {
+      for (const names of dto.serviceName) {
+        const services = await this.repository.getByService([names]);
+        if (!services) {
+          throw new Exceptions(
+            ExceptionType.NotFundexception,
+            'Serviço não encontrado',
+          );
+        }
+      }
+    }
+
+    if (dto.day || dto.startTime) {
+      const calendar = await this.repository.getByCalendar(dto.calendarId);
+      if (!calendar) {
+        throw new Exceptions(
+          ExceptionType.NotFundexception,
+          'Calendario não encontrado',
+        );
+      }
+
+      for (const day of dto.day) {
+        if (!calendar.day.includes(day)) {
+          throw new Exceptions(
+            ExceptionType.NotFundexception,
+            'data indisponíveis',
+          );
+        }
+      }
+
+      for (const time of dto.startTime) {
+        if (!calendar.startTime.includes(time)) {
+          throw new Exceptions(
+            ExceptionType.NotFundexception,
+            'horarios indisponíveis',
+          );
+        }
+      }
+    }
+    
+    const schedule: Partial<ScheduleEntity> = {
+      ...dto,
+    };
+
+    return await this.repository.update(id, schedule);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.findOne(id);
+    await this.repository.delete(id);
   }
 }
