@@ -15,7 +15,7 @@ export class ScheduleRepository {
 
   async create(data: ScheduleEntity): Promise<ScheduleEntity> {
     try {
-      return await this.prisma.schedule.create({ data })
+      return await this.prisma.schedule.create({ data });
     } catch (err) {
       if (err instanceof Validation) {
         throw new Exceptions(ExceptionType.InvalidData, err.message);
@@ -78,5 +78,26 @@ export class ScheduleRepository {
     } catch (err) {
       null;
     }
+  }
+
+  async findOne(id: string): Promise<ScheduleEntity> {
+    try {
+      return await this.prisma.schedule.findUniqueOrThrow({ where: { id } });
+    } catch (err) {}
+  }
+
+  async update(
+    id: string,
+    data: Partial<ScheduleEntity>,
+  ): Promise<ScheduleEntity> {
+    try {
+      return await this.prisma.schedule.update({ where: { id }, data });
+    } catch (err) {}
+  }
+
+  async delete(id: string): Promise<void> {
+    try {
+      await this.prisma.schedule.delete({ where: { id } });
+    } catch (err) {}
   }
 }
