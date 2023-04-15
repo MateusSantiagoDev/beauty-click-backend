@@ -11,32 +11,31 @@ import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 @Injectable()
 export class ServicesService {
   constructor(private readonly repository: ServicesRepository) {}
-
   async create(dto: CreateServicesDto): Promise<ServicesEntity> {
-    const requiredFields = ['name', 'images'];
-
+    const requiredFields = ['addressId', 'serviceName', 'images', 'price'];
     ValidationRequiredFields(dto, requiredFields);
 
     await this.repository.getAddressById(dto.addressId);
 
     const isService = await this.repository.getByService(
-      dto.name,
+      dto.serviceName,
       dto.addressId,
     );
 
     if (isService) {
       throw new Exceptions(
         ExceptionType.InvalidData,
-        'Esse serviço já esta cadastrado!',
+        'Esse serviço já esta cadastrado nesse endereço!',
       );
     }
 
-    const servicesModel: ServicesEntity = {
+    const service: ServicesEntity = {
       id: randomUUID(),
       ...dto,
+      images: Array.isArray(dto.images) ? dto.images : [dto.images],
     };
 
-    return await this.repository.create(servicesModel);
+    return await this.repository.create(service);
   }
 
   async findAll(): Promise<ServicesEntity[]> {
@@ -50,22 +49,13 @@ export class ServicesService {
   async update(id: string, dto: UpdateServicesDto): Promise<ServicesEntity> {
     await this.findOne(id);
 
-    if (dto.name) {
-      const isService = await this.repository.getByService(
-        dto.name,
-        dto.addressId,
-      );
+    const service: Partial<ServicesEntity> = {
+      id: randomUUID(),
+      ...dto,
+      images: Array.isArray(dto.images) ? dto.images : [dto.images],
+    };
 
-      if (isService) {
-        throw new Exceptions(
-          ExceptionType.InvalidData,
-          'Esse serviço já esta cadastrado!',
-        );
-      }
-    }
-    
-    const servicesModel: Partial<ServicesEntity> = { ...dto };
-    return await this.repository.update(id, servicesModel);
+    return await this.repository.update(id, service);
   }
 
   async delete(id: string): Promise<void> {
