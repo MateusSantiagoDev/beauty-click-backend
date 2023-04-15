@@ -5,4 +5,12 @@ export class UpdateScheduleDto extends PartialType(CreateScheduleDto) {
   @ApiHideProperty()
   @ApiProperty({ readOnly: true })
   userId: string;
+
+  @ApiHideProperty()
+  @ApiProperty({ readOnly: true })
+  addressId: string;
+
+  @ApiHideProperty()
+  @ApiProperty({ readOnly: true })
+  calendarId: string;
 }
