@@ -6,7 +6,6 @@ import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
 import { UserEntity } from '../../signup/entities/user-entity';
 import { AddressEntity } from '../../address/entities/address-entity';
 import { ServicesEntity } from '../../services/entities/services-entity';
-import { CalendarEntity } from '../../calendar/entities/calendar-entity';
 
 @Injectable()
 export class ScheduleRepository {
@@ -99,6 +98,16 @@ export class ScheduleRepository {
           day: true,
           startTime: true,
         },
+      });
+    } catch (err) {
+      null;
+    }
+  }
+
+  async getBySchedule(userId: string): Promise<any> {
+    try {
+      return await this.prisma.schedule.findFirstOrThrow({
+        where: { userId: userId },
       });
     } catch (err) {
       null;

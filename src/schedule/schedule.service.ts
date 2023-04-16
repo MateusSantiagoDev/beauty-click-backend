@@ -31,6 +31,14 @@ export class ScheduleService {
       );
     }
 
+    const scheduleCreated = await this.repository.getBySchedule(dto.userId)
+    if(scheduleCreated) {
+      throw new Exceptions(
+        ExceptionType.NotFundexception,
+        'o agendamento já foi realizado',
+      );
+    }
+
     const address = await this.repository.getByAddress(dto.addressId);
     if (!address) {
       throw new Exceptions(
