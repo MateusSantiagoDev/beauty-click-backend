@@ -20,12 +20,6 @@ export class CreateScheduleDto {
   serviceName: string[];
 
   @ApiProperty({
-    description: 'ID do calendario de agendamento',
-    example: 'string',
-  })
-  calendarId: string;
-
-  @ApiProperty({
     description: 'Dia do agendamento',
     example: '["sexta-feira", "sabado"]',
   })
