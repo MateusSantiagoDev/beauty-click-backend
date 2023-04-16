@@ -95,8 +95,6 @@ model Calendar {
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @unique @map("address_id")
 
-  schedules Schedule[]
-
   @@map("calendar")
 }
 
@@ -111,9 +109,6 @@ model Schedule {
 
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @map("address_id")
-
-  calendar   Calendar? @relation(fields: [calendarId], references: [id])
-  calendarId String?   @map("calendar_id")
 
   services Services[]
 
