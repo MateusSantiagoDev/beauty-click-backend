@@ -8,15 +8,19 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { ScheduleEntity } from './entities/schedule-entity';
 import { HandleExceptions } from '../utils/exceptions/handle-exceptions';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Schedule')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly service: ScheduleService) {}
