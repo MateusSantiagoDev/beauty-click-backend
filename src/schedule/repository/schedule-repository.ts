@@ -25,7 +25,6 @@ export class ScheduleRepository {
       return await this.prisma.schedule.findMany({
         include: {
           address: true,
-          calendar: true,
           services: true,
         },
       });
@@ -68,10 +67,38 @@ export class ScheduleRepository {
     }
   }
 
-  async getByCalendar(calendarId: string): Promise<CalendarEntity> {
+  async getByCalendar(addressId: string): Promise<any> {
     try {
-      return await this.prisma.calendar.findFirstOrThrow({
-        where: { id: calendarId },
+      return await this.prisma.calendar.findUnique({
+        where: {
+          addressId: addressId,
+        },
+        select: {
+          day: true,
+          startTime: true,
+        },
+      });
+    } catch (err) {
+      null;
+    }
+  }
+
+  async getByRelatedAddress(id: string): Promise<any> {
+    try {
+      const address = await this.prisma.schedule.findUnique({
+        where: { id },
+        select: {
+          addressId: true,
+        },
+      });
+      return await this.prisma.calendar.findUnique({
+        where: {
+          addressId: address.addressId,
+        },
+        select: {
+          day: true,
+          startTime: true,
+        },
       });
     } catch (err) {
       null;
