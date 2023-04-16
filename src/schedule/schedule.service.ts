@@ -115,25 +115,32 @@ export class ScheduleService {
         );
       }
 
-      for (const day of dto.day) {
-        if (!calendar.day.includes(day)) {
-          throw new Exceptions(
-            ExceptionType.NotFundexception,
-            'data indisponíveis',
-          );
-        }
+      if (dto.day) {
+       dto.day.map((day) => {
+          if (!calendar.day.includes(day)) {
+            throw new Exceptions(
+              ExceptionType.NotFundexception,
+              'data indisponível',
+            );
+          }
+          return Array.isArray(day) ? day : [day];
+      
+        });
       }
 
-      for (const time of dto.startTime) {
-        if (!calendar.startTime.includes(time)) {
-          throw new Exceptions(
-            ExceptionType.NotFundexception,
-            'horarios indisponíveis',
-          );
-        }
+      if (dto.startTime) {
+        dto.startTime.map((time) => {
+          if (!calendar.startTime.includes(time)) {
+            throw new Exceptions(
+              ExceptionType.NotFundexception,
+              'horario indisponível',
+            );
+          }
+          return Array.isArray(time) ? time : [time];
+        });
       }
     }
-    
+
     const schedule: Partial<ScheduleEntity> = {
       ...dto,
     };
