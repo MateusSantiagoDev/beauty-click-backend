@@ -3,7 +3,6 @@ export class ScheduleEntity {
   userId: string;
   addressId: string;
   serviceName: string[];
-  calendarId: string;
   day: string[];
   startTime: string[];
 }
