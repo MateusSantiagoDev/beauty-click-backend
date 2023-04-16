@@ -82,7 +82,7 @@ export class ScheduleRepository {
     try {
       return await this.prisma.schedule.findUniqueOrThrow({ where: { id } });
     } catch (err) {
-      throw new Exceptions(ExceptionType.NotFundData);
+      throw new Exceptions(ExceptionType.NotFundexception);
     }
   }
 
