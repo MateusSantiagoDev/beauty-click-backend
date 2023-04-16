@@ -17,7 +17,6 @@ export class ScheduleService {
       'userId',
       'addressId',
       'serviceName',
-      'calendarId',
       'day',
       'startTime',
     ];
@@ -50,7 +49,7 @@ export class ScheduleService {
       }
     }
 
-    const calendar = await this.repository.getByCalendar(dto.calendarId);
+    const calendar = await this.repository.getByCalendar(dto.addressId);
     if (!calendar) {
       throw new Exceptions(
         ExceptionType.NotFundexception,
@@ -107,7 +106,7 @@ export class ScheduleService {
     }
 
     if (dto.day || dto.startTime) {
-      const calendar = await this.repository.getByCalendar(dto.calendarId);
+      const calendar = await this.repository.getByRelatedAddress(id);
       if (!calendar) {
         throw new Exceptions(
           ExceptionType.NotFundexception,
