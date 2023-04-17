@@ -128,13 +128,15 @@ model AddressLocation {
 }
 
 model PlacesLocation {
-  id                String          @id
-  name              String
-  address           String
-  latitude          String
-  longitude         String
-  addressLocation   AddressLocation @relation(fields: [addressLocationId], references: [id])
-  addressLocationId String          @unique @map("address_location_id")
+  id        String @id
+  name      String
+  address   String
+  latitude  String
+  longitude String
+
+  addressLocation AddressLocation @relation(fields: [addressLocationId], references: [id])
+
+  addressLocationId String @unique @map("address_location_id")
 
   @@map("places_location")
 }

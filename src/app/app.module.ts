@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { LocationModule } from '../location/location.module'; 
+import { LocationModule } from '../location/location.module';
 import { AddressModule } from '../address/address.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { SignupModule } from '../signup/signup.module';
@@ -8,10 +8,21 @@ import { ServicesModule } from '../services/services.module';
 import { CalendarModule } from '../calendar/calendar.module';
 import { LoginModule } from '../login/login.module';
 import { ScheduleModule } from '../schedule/schedule.module';
+import { AddressLocationModule } from '../address-location/address-location.module';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [PrismaModule, SignupModule, AddressModule, LocationModule, ServicesModule, CalendarModule, LoginModule, ScheduleModule],
+  imports: [
+    PrismaModule,
+    SignupModule,
+    AddressModule,
+    LocationModule,
+    ServicesModule,
+    CalendarModule,
+    LoginModule,
+    ScheduleModule,
+    AddressLocationModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
