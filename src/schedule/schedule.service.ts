@@ -4,9 +4,8 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { ScheduleEntity } from './entities/schedule-entity';
 import { randomUUID } from 'crypto';
 import { ValidationRequiredFields } from '../utils/helpers/required-fields';
-import { Exceptions } from 'src/utils/exceptions/exception';
-import { ExceptionType } from 'src/utils/exceptions/exceptions-protocols';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { SearchMethods } from '../utils/helpers/search-methods';
 
 @Injectable()
 export class ScheduleService {
@@ -23,65 +22,20 @@ export class ScheduleService {
 
     ValidationRequiredFields(dto, requiredFields);
 
-    const user = await this.repository.getByUser(dto.userId);
-    if (!user) {
-      throw new Exceptions(
-        ExceptionType.NotFundexception,
-        'usuário não encontrado',
-      );
-    }
+    const isUser = new SearchMethods(dto.userId, this.repository);
+    await isUser.getByUser();
 
-    const scheduleCreated = await this.repository.getBySchedule(dto.userId)
-    if(scheduleCreated) {
-      throw new Exceptions(
-        ExceptionType.NotFundexception,
-        'o agendamento já foi realizado',
-      );
-    }
+    const isScheduleCreated = new SearchMethods(dto.userId, this.repository);
+    await isScheduleCreated.getBySchedule();
 
-    const address = await this.repository.getByAddress(dto.addressId);
-    if (!address) {
-      throw new Exceptions(
-        ExceptionType.NotFundexception,
-        'Endereço não encontrado',
-      );
-    }
+    const isAddress = new SearchMethods(dto.addressId, this.repository);
+    await isAddress.getByAddress();
 
-    for (const names of dto.serviceName) {
-      const services = await this.repository.getByService([names]);
-      if (!services) {
-        throw new Exceptions(
-          ExceptionType.NotFundexception,
-          'Serviço não encontrado',
-        );
-      }
-    }
+    const isServices = new SearchMethods(dto.addressId, this.repository);
+    await isServices.getByServices(dto);
 
-    const calendar = await this.repository.getByCalendar(dto.addressId);
-    if (!calendar) {
-      throw new Exceptions(
-        ExceptionType.NotFundexception,
-        'Calendario não encontrado',
-      );
-    }
-
-    for (const day of dto.day) {
-      if (!calendar.day.includes(day)) {
-        throw new Exceptions(
-          ExceptionType.NotFundexception,
-          'data indisponíveis',
-        );
-      }
-    }
-
-    for (const time of dto.startTime) {
-      if (!calendar.startTime.includes(time)) {
-        throw new Exceptions(
-          ExceptionType.NotFundexception,
-          'horarios indisponíveis',
-        );
-      }
-    }
+    const isCalendar = new SearchMethods(dto.addressId, this.repository);
+    await isCalendar.getByCalendar(dto);
 
     const schedule: ScheduleEntity = {
       id: randomUUID(),
@@ -102,49 +56,20 @@ export class ScheduleService {
     await this.findOne(id);
 
     if (dto.serviceName) {
-      for (const names of dto.serviceName) {
-        const services = await this.repository.getByService([names]);
-        if (!services) {
-          throw new Exceptions(
-            ExceptionType.NotFundexception,
-            'Serviço não encontrado',
-          );
-        }
-      }
+      const isServices = new SearchMethods(id, this.repository);
+      await isServices.getByRelatedServices(dto);
     }
 
     if (dto.day || dto.startTime) {
-      const calendar = await this.repository.getByRelatedAddress(id);
-      if (!calendar) {
-        throw new Exceptions(
-          ExceptionType.NotFundexception,
-          'Calendario não encontrado',
-        );
-      }
+      const isCalendar = new SearchMethods(id, this.repository);
+      await isCalendar.getByRelatedAddress(dto);
 
       if (dto.day) {
-       dto.day.map((day) => {
-          if (!calendar.day.includes(day)) {
-            throw new Exceptions(
-              ExceptionType.NotFundexception,
-              'data indisponível',
-            );
-          }
-          return Array.isArray(day) ? day : [day];
-      
-        });
+        await isCalendar.getByRelatedAddress(dto.day);
       }
 
       if (dto.startTime) {
-        dto.startTime.map((time) => {
-          if (!calendar.startTime.includes(time)) {
-            throw new Exceptions(
-              ExceptionType.NotFundexception,
-              'horario indisponível',
-            );
-          }
-          return Array.isArray(time) ? time : [time];
-        });
+        await isCalendar.getByRelatedAddress(dto.startTime);
       }
     }
 
