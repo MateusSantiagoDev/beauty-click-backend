@@ -82,7 +82,8 @@ model Services {
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @map("address_id")
 
-  schedules Schedule[]
+  schedules       Schedule[]
+  AddressLocation AddressLocation[]
 
   @@map("services")
 }
@@ -102,7 +103,7 @@ model Schedule {
   id          String   @id
   day         String[]
   startTime   String[]
-  serviceName String[]
+  serviceName String[] @map("service_name")
 
   user   User?   @relation(fields: [userId], references: [id])
   userId String? @map("user_id")
@@ -113,4 +114,27 @@ model Schedule {
   services Services[]
 
   @@map("schedule")
+}
+
+model AddressLocation {
+  id          String   @id
+  region      String
+  serviceName String[] @map("service_name")
+
+  services       Services[]
+  PlacesLocation PlacesLocation[]
+
+  @@map("address_location")
+}
+
+model PlacesLocation {
+  id                String          @id
+  name              String
+  address           String
+  latitude          String
+  longitude         String
+  addressLocation   AddressLocation @relation(fields: [addressLocationId], references: [id])
+  addressLocationId String          @unique @map("address_location_id")
+
+  @@map("places_location")
 }
