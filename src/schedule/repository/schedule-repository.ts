@@ -5,7 +5,6 @@ import { Exceptions } from '../../utils/exceptions/exception';
 import { ExceptionType } from '../../utils/exceptions/exceptions-protocols';
 import { UserEntity } from '../../signup/entities/user-entity';
 import { AddressEntity } from '../../address/entities/address-entity';
-import { ServicesEntity } from '../../services/entities/services-entity';
 
 @Injectable()
 export class ScheduleRepository {
@@ -24,7 +23,6 @@ export class ScheduleRepository {
       return await this.prisma.schedule.findMany({
         include: {
           address: true,
-          services: true,
         },
       });
     } catch (err) {
@@ -52,15 +50,15 @@ export class ScheduleRepository {
     }
   }
 
-  async getByService(serviceName: string[]): Promise<ServicesEntity> {
+  async getByService(addressId: string): Promise<any> {
     try {
-      return await this.prisma.services.findFirstOrThrow({
-        where: {
-          serviceName: {
-            in: serviceName,
-          },
+      const services = await this.prisma.services.findMany({
+        where: { addressId: addressId },
+        select: {
+          serviceName: true,
         },
       });
+      return services;
     } catch (err) {
       null;
     }
@@ -77,6 +75,26 @@ export class ScheduleRepository {
           startTime: true,
         },
       });
+    } catch (err) {
+      null;
+    }
+  }
+
+  async getByRelatedServices(id: string): Promise<any> {
+    try {
+      const address = await this.prisma.schedule.findUnique({
+        where: { id },
+        select: {
+          addressId: true,
+        },
+      });
+      const result = await this.prisma.services.findMany({
+        where: { addressId: address.addressId },
+        select: {
+          serviceName: true,
+        },
+      });
+      return result;
     } catch (err) {
       null;
     }
