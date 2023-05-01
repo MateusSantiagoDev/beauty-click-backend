@@ -8,5 +8,6 @@ import { AddressLocationRepository } from './repository/address-location-reposit
   imports: [PrismaModule],
   controllers: [AddressLocationController],
   providers: [AddressLocartionService, AddressLocationRepository],
+  exports: [AddressLocationRepository],
 })
 export class AddressLocationModule {}
