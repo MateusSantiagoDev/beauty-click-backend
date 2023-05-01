@@ -43,10 +43,11 @@ model Address {
   createdAt DateTime? @map("created_at")
   updatedAt DateTime? @map("updated_at")
 
-  schedules Schedule[]
-  Services  Services[]
-  location  Location?
-  calendar  Calendar?
+  AddressLocation AddressLocation[]
+  schedules       Schedule[]
+  Services        Services[]
+  location        Location?
+  calendar        Calendar?
 
   @@map("address")
 }
@@ -82,8 +83,7 @@ model Services {
   address   Address? @relation(fields: [addressId], references: [id])
   addressId String?  @map("address_id")
 
-  schedules       Schedule[]
-  AddressLocation AddressLocation[]
+  schedules Schedule[]
 
   @@map("services")
 }
@@ -117,11 +117,13 @@ model Schedule {
 }
 
 model AddressLocation {
-  id          String   @id
-  region      String
-  serviceName String[] @map("service_name")
+  id        String @id
+  name      String
+  address   String
+  latitude  String
+  longitude String
 
-  services       Services[]
+  addresses      Address[]
   PlacesLocation PlacesLocation[]
 
   @@map("address_location")
