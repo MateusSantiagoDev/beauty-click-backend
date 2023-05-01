@@ -17,6 +17,7 @@ async function bootstrap() {
   .addTag('Services')
   .addTag('Calendar')
   .addTag('Schedule')
+  .addTag('Places')
   .addBearerAuth()
   .build();
 
